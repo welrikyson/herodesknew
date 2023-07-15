@@ -1,0 +1,42 @@
+﻿@page "/listagem-tickets"
+
+@using System.Collections.Generic
+@using herodesknew.Shared
+
+<h3>Listagem de Tickets</h3>
+
+@if (tickets == null)
+{
+    <p>Carregando tickets...</p>
+}
+else if (tickets.Count == 0)
+{
+    <p>Nenhum ticket encontrado.</p>
+}
+else
+{
+    <RadzenGrid TItem="Ticket" Data="@tickets" PageSize="10" AllowFiltering="true">
+        <Columns>
+            <RadzenGridColumn TItem="Ticket" Property="Id" Title="ID" />
+            <RadzenGridColumn TItem="Ticket" Property="Title" Title="Título" />
+            <RadzenGridColumn TItem="Ticket" Property="UserEmail" Title="Email do Usuário" />
+            <RadzenGridColumn TItem="Ticket" Property="IsClosed" Title="Fechado" />
+        </Columns>
+    </RadzenGrid>
+}
+
+@code {
+    private List<Ticket> tickets;
+
+    protected override void OnInitialized()
+    {
+        // Simulando a busca de tickets do servidor
+        tickets = new List<Ticket>
+    {
+            new Ticket { Id = 1, Title = "Ticket 1", UserEmail = "user1@example.com", IsClosed = false ,IdDepartment = 0,Description = string.Empty,SlaUsed=10},
+            new Ticket { Id = 2, Title = "Ticket 2", UserEmail = "user2@example.com", IsClosed = true ,IdDepartment = 0,Description = string.Empty,SlaUsed=10},
+            new Ticket { Id = 3, Title = "Ticket 3", UserEmail = "user3@example.com", IsClosed = false ,IdDepartment = 0,Description = string.Empty,SlaUsed=10},
+            // Adicione mais tickets aqui, se necessário
+        };
+    }
+}
