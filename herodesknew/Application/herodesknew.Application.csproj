@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\herodesknew.Domain.csproj" />
+    <ProjectReference Include="..\Shared\herodesknew.Shared.csproj" />
+  </ItemGroup>
+
 </Project>
