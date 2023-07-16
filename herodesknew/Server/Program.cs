@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddOpenApiDocument( configure => configure.Title = "herodesknew api");
 
 var app = builder.Build();
 
@@ -25,6 +26,11 @@ app.UseHttpsRedirection();
 
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
+
+
+app.UseOpenApi();
+app.UseSwaggerUi3();
+app.UseReDoc(configure => configure.Path = "/redoc");
 
 app.UseRouting();
 
