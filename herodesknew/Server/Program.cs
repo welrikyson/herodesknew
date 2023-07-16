@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.ResponseCompression;
-
+using herodesknew.Server.Configurations;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.InfrastructureServiceInstall(builder.Configuration);
 builder.Services.AddOpenApiDocument( configure => configure.Title = "herodesknew api");
 
 var app = builder.Build();
