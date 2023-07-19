@@ -33,7 +33,7 @@ namespace herodesknew.Infrastructure.Data.Repositories
                     [status]
                 FROM [dbo].[problems]
                 WHERE [idAtuante] = @idSupportAgent and [status] in( 'AC', 'EA', 'OK') 
-                ORDER BY [slaUsed] DESC
+                ORDER BY [id] DESC
                 """;
             var problemRows = await connection.QueryAsync(query, new { idSupportAgent });
             List<Ticket> tickets = new ();

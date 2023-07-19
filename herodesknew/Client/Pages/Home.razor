@@ -1,5 +1,10 @@
 ﻿@page "/"
+@using herodesknew.Application.Tickets.Queries.GetTickets;
+@using herodesknew.Domain.Entities;
 @using herodesknew.Shared
+
+@inject HttpClient Http
+
 <h3>Início</h3>
 
 <p>Esta é a tela inicial do sistema de Helpdesk.</p>
@@ -15,7 +20,7 @@ else
             Total de Tickets
         </RadzenText>
         <RadzenStack>
-            <p>Total de Tickets Abertos: @totalTicketsAbertos</p>
+            <p>Total de Tickets em Analise: @totalTicketsEmAnalise</p>
             <p>Total de Tickets Fechados: @totalTicketsFechados</p>
         </RadzenStack>
     </RadzenCard>
@@ -31,24 +36,19 @@ else
 }
 
 @code {
-    private List<Ticket> tickets = new();
-
-    private int totalTicketsAbertos;
+    private int totalTicketsEmAnalise;
     private int totalTicketsFechados;
     private double tempoMedioResolucao;
 
-    protected override void OnInitialized()
-    {
-        //Simulando a busca de tickets do servidor
-       tickets = new List<Ticket>
-       {
-            new Ticket { Id = 1, Title = "Ticket 1", UserEmail = "user1@example.com", IsClosed = false ,IdDepartment = 0,Description = string.Empty,SlaUsed=10},
-           // Adicione mais tickets aqui, se necessário
-       };
 
-        // Calcular as informações dos tickets
-       totalTicketsAbertos = tickets.Count(t => !t.IsClosed);
+    private TicketResponse[]? tickets;
+
+    protected override async Task OnInitializedAsync()
+    {
+        tickets = await Http.GetFromJsonAsync<TicketResponse[]>("Ticket");
+        if (tickets == null) return;
+        totalTicketsEmAnalise = tickets.Count(t => !t.IsClosed);
         totalTicketsFechados = tickets.Count(t => t.IsClosed);
         tempoMedioResolucao = tickets.Where(t => t.IsClosed).Select(t => t.SlaUsed).DefaultIfEmpty().Average();
-    }
+    }    
 }
