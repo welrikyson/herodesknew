@@ -2,6 +2,7 @@
 using herodesknew.Domain.Entities;
 using herodesknew.Domain.Repositories;
 using herodesknew.Infrastructure.Contexts;
+using herodesknew.Infrastructure.Data.Mock;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,8 @@ namespace herodesknew.Infrastructure.Data.Repositories
         
         public async Task<List<Ticket>> GetByIdSupportAgentAsync(int idSupportAgent)
         {
+
+            return await Task.FromResult(TicketMock.GenerateTicketsMock());
             using var connection = helpdeskContext.CreateDbConnection();
             var query = """
                 SELECT 

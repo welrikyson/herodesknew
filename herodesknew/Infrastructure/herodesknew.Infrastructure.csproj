@@ -16,4 +16,10 @@
     <ProjectReference Include="..\Domain\herodesknew.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Data\Mock\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Data\Mock\" />
+  </ItemGroup>
 </Project>
