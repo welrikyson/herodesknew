@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace herodesknew.Application.Tickets.Queries.GetTickets
 {
-    internal class GetTicketsQuery
+    public class GetTicketsQuery
     {
     }
 }

@@ -1,4 +1,6 @@
-﻿using Scrutor;
+﻿using herodesknew.Application.Tickets.Queries.GetTickets;
+using herodesknew.Infrastructure.Contexts;
+using Scrutor;
 
 namespace herodesknew.Server.Configurations
 {
@@ -14,7 +16,9 @@ namespace herodesknew.Server.Configurations
                           .AddClasses(false)
                           .UsingRegistrationStrategy(RegistrationStrategy.Skip)
                           .AsMatchingInterface()
-                          .WithScopedLifetime());
+                          .WithScopedLifetime())
+                  .AddTransient<HelpdeskContext>()
+                  .AddTransient<GetMembersQueryHandler>();
         }
     }
 }

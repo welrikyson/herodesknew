@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace herodesknew.Application.Tickets.Queries.GetTickets
 {
-    internal sealed class GetMembersQueryHandler
+    public sealed class GetMembersQueryHandler
     {
         private readonly ITicketRepository _ticketRepository;
 
@@ -20,15 +20,15 @@ namespace herodesknew.Application.Tickets.Queries.GetTickets
 
         public async Task<Result<List<TicketResponse>>> Handle(GetTicketsQuery getTicketsQuery)
         {
-            var tickets = await _ticketRepository.GetByIdSupportAgentAsync(1456);
+            var tickets = await _ticketRepository.GetByIdSupportAgentAsync(11981);
 
             if (tickets.Count == 0)
             {
-                return Result.Failure<List<TicketResponse>>(
+                return Result.Failure<List<TicketResponse>>(    
                           DomainErrors.Member.NotExist);
             }
 
-            List<TicketResponse> ticketReponseList = tickets.Select(ticket => new TicketResponse())                                        
+            List<TicketResponse> ticketReponseList = tickets.Select(ticket => new TicketResponse() { Id = ticket.Id })                                        
                                                             .ToList();
             
             return Result.Success(ticketReponseList);

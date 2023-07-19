@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Application\herodesknew.Application.csproj" />
     <ProjectReference Include="..\Client\herodesknew.Client.csproj" />
     <ProjectReference Include="..\Shared\herodesknew.Shared.csproj" />
     <ProjectReference Include="..\Infrastructure\herodesknew.Infrastructure.csproj">

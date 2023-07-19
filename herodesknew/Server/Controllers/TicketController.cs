@@ -1,4 +1,5 @@
-﻿using herodesknew.Shared;
+﻿using herodesknew.Application.Tickets.Queries.GetTickets;
+using herodesknew.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,16 +10,27 @@ namespace herodesknew.Server.Controllers
     public class TicketController : ControllerBase
     {
         private readonly ILogger<TicketController> _logger;
+        private readonly GetMembersQueryHandler _getMembersQueryHandler;
 
-        public TicketController(ILogger<TicketController> logger)
+        public TicketController(ILogger<TicketController> logger, GetMembersQueryHandler getMembersQueryHandler)
         {
             _logger = logger;
+            _getMembersQueryHandler = getMembersQueryHandler;
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> GetAsync()
         {
-            return Ok();
+            var result = await _getMembersQueryHandler.Handle(new GetTicketsQuery());
+            if (result.IsSuccess)
+            {
+                return Ok(result.Value);
+            }
+            else
+            {
+                return NotFound();
+            }
+            
         }
     }
 }

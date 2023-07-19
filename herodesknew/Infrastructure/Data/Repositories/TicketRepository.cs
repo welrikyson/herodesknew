@@ -32,7 +32,7 @@ namespace herodesknew.Infrastructure.Data.Repositories
                     [dbo].[fncConsumoSlaChamado]([id]) AS [slaUsed],
                     [status]
                 FROM [dbo].[problems]
-                WHERE [idAtuante] = @idUser and [status] in( 'AC', 'EA', 'OK') 
+                WHERE [idAtuante] = @idSupportAgent and [status] in( 'AC', 'EA', 'OK') 
                 ORDER BY [slaUsed] DESC
                 """;
             var problemRows = await connection.QueryAsync(query, new { idSupportAgent });
