@@ -9,13 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "herodesknew.Client", "herod
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "herodesknew.Shared", "herodesknew\Shared\herodesknew.Shared.csproj", "{A0749F21-0567-46FA-899F-658C776615EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "herodesknew.Infrastructure", "herodesknew\Infrastructure\herodesknew.Infrastructure.csproj", "{594E4D64-D5AB-4749-9910-C3A777F63FA5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "herodesknew.Infrastructure", "herodesknew\Infrastructure\herodesknew.Infrastructure.csproj", "{594E4D64-D5AB-4749-9910-C3A777F63FA5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "herodesknew.Application", "herodesknew\Application\herodesknew.Application.csproj", "{1ADEEDF9-4178-4BD5-9959-2CCF5C8D1C60}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "herodesknew.Application", "herodesknew\Application\herodesknew.Application.csproj", "{1ADEEDF9-4178-4BD5-9959-2CCF5C8D1C60}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C2B67BB7-BECE-49A6-A580-CBED4EB2D682}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "herodesknew.Domain", "herodesknew\Domain\herodesknew.Domain.csproj", "{0C53334E-657F-4FBC-B285-5C7C2C4C7700}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "herodesknew.Domain", "herodesknew\Domain\herodesknew.Domain.csproj", "{0C53334E-657F-4FBC-B285-5C7C2C4C7700}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
