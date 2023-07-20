@@ -2,86 +2,93 @@
 using herodesknew.Domain.Entities;
 using herodesknew.Domain.Repositories;
 using herodesknew.Infrastructure.Contexts;
-using herodesknew.Infrastructure.Data.Mock;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace herodesknew.Infrastructure.Data.Repositories
+namespace herodesknew.Infrastructure.Data.Repositories;
+
+
+public class TicketQueryData
 {
-    internal sealed class TicketRepository : ITicketRepository
+    public int ProblemID { get; set; }
+    public required string ProblemEmail { get; set; }
+    public required string ProblemTitle { get; set; }
+    public required string ProblemDescription { get; set; }
+    public required int ProblemSLA { get; set; }
+    public required string ProblemStatus { get; set; }
+
+    public DateTime ProblemStartDate { get; set; }
+
+    public DateTime ProblemCloseDate { get; set; }
+
+    public required int DepartmentID { get; set; }
+
+    public int? AttachmentID { get; set; }
+    public string? AttachmentPath { get; set; }
+    public string? AttachmentName { get; set; }
+}
+internal sealed class TicketRepository : ITicketRepository
+{
+    private readonly HelpdeskContext helpdeskContext;
+
+    public TicketRepository(HelpdeskContext helpdeskContext)
     {
-        private readonly HelpdeskContext helpdeskContext;
+        this.helpdeskContext = helpdeskContext;
+    }
 
-        public TicketRepository(HelpdeskContext helpdeskContext) 
-        {
-            this.helpdeskContext = helpdeskContext;
-        }
-        
-        public async Task<List<Ticket>> GetByIdSupportAgentAsync(int idSupportAgent)
-        {
-
-            return await Task.FromResult(TicketMock.GenerateTicketsMock());
-            using var connection = helpdeskContext.CreateDbConnection();
-            var query = """
-                SELECT 
-                    [id] ,
-                    [uemail] ,
-                    [title] ,
-                    [description], 
-                    [department],
-                    [dbo].[fncConsumoSlaChamado]([id]) AS [slaUsed],
-                    [status]
-                FROM [dbo].[problems]
-                WHERE [idAtuante] = @idSupportAgent and [status] in( 'AC', 'EA', 'OK') 
-                ORDER BY [id] DESC
+    public async Task<List<Ticket>> GetByIdSupportAgentAsync(int idSupportAgent)
+    {            
+        using var connection = helpdeskContext.CreateDbConnection();
+        string sql = """
+                SELECT
+                    [p].[id] AS [ProblemID],
+                    [p].[title] AS [ProblemTitle],
+                    [p].[description] AS [ProblemDescription],
+                    [p].[uemail] AS [ProblemEmail],
+                    [p].[department] AS [DepartmentID],
+                    [p].[Status] AS [ProblemStatus],
+                    [p].[start_date] AS [ProblemStartDate],
+                    [p].[close_date] AS [ProblemCloseDate],
+                    [dbo].[fncConsumoSlaChamado]([p].[id]) AS [ProblemSLA],
+                    [anexo].[ID] AS [AttachmentID],
+                    [anexo].[UPL_NOME] AS [AttachmentName],
+                    [anexo].[UPL_CAMINHO] AS [AttachmentPath]
+                FROM 
+                    [dbo].[problems] [p]
+                LEFT JOIN 
+                    [dbo].[TB_HLD_UPLOAD] [anexo] ON [p].[id] = [anexo].[ID]
+                WHERE 
+                    [p].[idAtuante] = @idSupportAgent
+                ORDER BY 
+                    [p].[id] DESC;                
                 """;
-            var problemRows = await connection.QueryAsync(query, new { idSupportAgent });
-            List<Ticket> tickets = new ();
-            foreach (var problemRow in problemRows)
+
+        var ticketQueryDatas = await connection.QueryAsync<TicketQueryData>(
+            sql,
+            new { idSupportAgent }
+        );
+
+        var tickets = ticketQueryDatas
+            .GroupBy(p => p.ProblemID)
+            .Select(g => new Ticket
             {
-                var ticket = new Ticket()
-                {
-                    Id = problemRow.id,
-                    UserEmail = problemRow.uemail,
-                    IdDepartment = problemRow.department,
-                    Title = problemRow.title,
-                    Description = problemRow.description,
-                    SlaUsed = problemRow.slaUsed,
-                    IsClosed = problemRow.status == "OK"
-                };
-                var queryAttachments = """
-                    SELECT 
-                        [COD_UPLOAD]
-                        ,[ID]
-                        ,[UPL_CAMINHO]
-                        ,[UPL_NOME]
-                    FROM [Helpdesk].[dbo].[TB_HLD_UPLOAD]
-                    where [ID] = @id
-                    order by COD_UPLOAD DESC 
-                    """;
+                Id = g.Key,
+                Description = g.First().ProblemDescription,
+                IdDepartment = g.First().DepartmentID,
+                SlaUsed = g.First().ProblemSLA,
+                Title = g.First().ProblemTitle,
+                UserEmail = g.First().ProblemEmail,
+                StartDate = g.First().ProblemStartDate,
+                CloseDate = g.First().ProblemCloseDate,
+                Status = g.First().ProblemStatus.ParseStatus(),
+                Attachments = g.Where(t => t.AttachmentID.HasValue)
+                              .Select(t => new Attachment
+                              {
+                                  Id = t.AttachmentID ?? 0,
+                                  FileName = t.AttachmentName ?? string.Empty,
+                                  FilePath = t.AttachmentPath ?? string.Empty,
+                                  TicketId = t.ProblemID
+                              }).ToList()
+            }).ToList();
 
-                var attachmentRows = await connection.QueryAsync(queryAttachments, new { id = ticket.Id });
-                var attachments = attachmentRows.Select((attachment) =>
-                {
-                    return new Attachment()
-                    {
-                        Id = attachment.COD_UPLOAD,
-                        FileName = attachment.UPL_NOME,
-                        FilePath = attachment.UPL_CAMINHO,
-                        TicketId = ticket.Id,
-                    };
-                });
-
-                ticket.Attachments = attachments.Select(a => a).ToList();
-
-                tickets.Add(ticket);
-            }
-
-            return tickets;
-
-        }
+        return tickets;
     }
 }

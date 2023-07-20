@@ -20,7 +20,7 @@ else
             <RadzenDataGridColumn TItem="TicketResponse" Property="Id" Title="Id" />
             <RadzenDataGridColumn TItem="TicketResponse" Property="Title" Title="Title" />
             <RadzenDataGridColumn TItem="TicketResponse" Property="SlaUsed" Title="SLA" />
-            <RadzenDataGridColumn TItem="TicketResponse" Property="IsClosed" Title="Closed" />
+            <RadzenDataGridColumn TItem="TicketResponse" Property="Status" Title="Status" />
             <RadzenDataGridColumn TItem="TicketResponse" Property="OrderID" Title="Details">
                 <Template Context="data">
                 <RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" @onclick="(() => {})" Icon="info" class="m-1" Text="@data.Id.ToString()" />

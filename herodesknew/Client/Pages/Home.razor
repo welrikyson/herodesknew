@@ -15,7 +15,7 @@ else
 {
     <RadzenCard Style="width: 300px;" Class="mb-3">
         <RadzenText>
-            Total de Tickets
+            Total de Tickets @firstDayOfMonth.ToString("yyyy/MM")
         </RadzenText>
         <RadzenStack>
             <p>Total de Tickets em Analise: @totalTicketsEmAnalise</p>
@@ -25,10 +25,10 @@ else
 
     <RadzenCard Style="width: 300px;">
         <RadzenText>
-            Tempo Médio de Resolução
+            SLA Médio de Resolução
         </RadzenText>
         <RadzenText>
-            <p>@tempoMedioResolucao horas</p>
+            <p>@slaMedioResolucao %</p>
         </RadzenText>
     </RadzenCard>
 }
@@ -36,8 +36,8 @@ else
 @code {
     private int totalTicketsEmAnalise;
     private int totalTicketsFechados;
-    private double tempoMedioResolucao;
-
+    private double slaMedioResolucao;
+    private DateTime firstDayOfMonth;
 
     private TicketResponse[]? tickets;
 
@@ -45,8 +45,17 @@ else
     {
         tickets = await Http.GetFromJsonAsync<TicketResponse[]>("Ticket");
         if (tickets == null) return;
-        totalTicketsEmAnalise = tickets.Count(t => !t.IsClosed);
-        totalTicketsFechados = tickets.Count(t => t.IsClosed);
-        tempoMedioResolucao = tickets.Where(t => t.IsClosed).Select(t => t.SlaUsed).DefaultIfEmpty().Average();
+
+        firstDayOfMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+
+        // Filtrar apenas os tickets com a data de abertura maior que o primeiro dia do mês
+        List<TicketResponse> ticketsOpenedAfterFirstDay = tickets.Where(ticket => ticket.StartDate > firstDayOfMonth).ToList();
+        
+        totalTicketsEmAnalise = ticketsOpenedAfterFirstDay.Count(t => t.Status == StatusEnum.EA);
+        totalTicketsFechados = ticketsOpenedAfterFirstDay.Count(t => t.Status == StatusEnum.OK);
+        //slaMedioResolucao = Math.Round(ticketsOpenedAfterFirstDay
+        //    .Where(t => t.Status == StatusEnum.OK)
+        //    .Select(t => t.SlaUsed).DefaultIfEmpty().Average(),2);
+        
     }    
 }

@@ -42,7 +42,9 @@ namespace herodesknew.Application.Tickets.Queries.GetTickets
                     Title = ticket.Title,
                     UserEmail = ticket.UserEmail,
                     Attachments = ticket.Attachments,
-                    IsClosed = ticket.IsClosed,
+                    CloseDate = ticket.CloseDate,
+                    StartDate = ticket.StartDate,
+                    Status = ticket.Status,
                     Solutions = ticket.Solutions,                    
                 };            
         }

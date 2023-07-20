@@ -19,7 +19,7 @@ namespace herodesknew.Infrastructure.Data.Mock
                     Description = $"Description for Ticket {i}",
                     UserEmail = $"user{i}@example.com",
                     SlaUsed = (i * 3) % 24,
-                    IsClosed = i % 2 == 0,
+                    Status = i % 2 == 0 ? StatusEnum.OK : StatusEnum.EA,
                     Attachments = GenerateAttachmentsMock(i),
                     Solutions = GenerateSolutionsMock(i)
                 };
