@@ -15,15 +15,15 @@
 }
 else
 {
-    <RadzenDataGrid TItem="TicketResponse" Data="@tickets" PageSize="8" ShowExpandColumn AllowPaging AllowSorting AllowColumnResize AllowFiltering>
+    <RadzenDataGrid TItem="TicketResponse" Data="@tickets" PageSize="10" ShowExpandColumn AllowPaging AllowSorting AllowColumnResize AllowFiltering>
         <Columns>
             <RadzenDataGridColumn TItem="TicketResponse" Property="Id" Title="Id" />
             <RadzenDataGridColumn TItem="TicketResponse" Property="Title" Title="Title" />
-            <RadzenDataGridColumn TItem="TicketResponse" Property="SlaUsed" Title="SLA" />
+        <RadzenDataGridColumn TItem="TicketResponse" Property="SlaUsed" Title="SLA" />
             <RadzenDataGridColumn TItem="TicketResponse" Property="Status" Title="Status" />
-            <RadzenDataGridColumn TItem="TicketResponse" Property="OrderID" Title="Details">
+        <RadzenDataGridColumn TItem="TicketResponse" Property="OrderID" Title="Details">
                 <Template Context="data">
-                <RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" @onclick="(() => {})" Icon="info" class="m-1" Text="@data.Id.ToString()" />
+                <RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.ExtraSmall"  @onclick="(() => {})" Icon="info" class="m-1" Text="@data.Id.ToString()" />
                 </Template>
             </RadzenDataGridColumn>
         </Columns>
@@ -32,9 +32,10 @@ else
 
 @code {
     private TicketResponse[]? tickets;
-
+    
     protected override async Task OnInitializedAsync()
     {
         tickets = await Http.GetFromJsonAsync<TicketResponse[]>("Ticket");
+
     }
 }
