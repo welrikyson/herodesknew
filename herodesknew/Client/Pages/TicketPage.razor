@@ -11,7 +11,23 @@
 <h3>Tickets List</h3>
 
 
-<RadzenDataGrid TItem="TicketResponse" Data="@tickets" LoadData="@LoadData" Count="@totalCount" PageSize="10" IsLoading=@isLoading ShowExpandColumn AllowPaging AllowSorting AllowColumnResize AllowFiltering>
+<RadzenDataGrid TItem="TicketResponse" Data="@tickets" LoadData="@LoadData" Count="@totalCount" PageSize="10" IsLoading=@isLoading ShowPagingSummary ShowExpandColumn AllowPaging AllowSorting AllowColumnResize AllowFiltering>
+    <Template Context="ticket">        
+        <div>
+            <RadzenText class="rz-text-wrap" TextStyle="TextStyle.Body1" TextAlign="TextAlign.Left">
+                <strong>User</strong><br />
+                @ticket.UserEmail
+            </RadzenText>
+            <RadzenText class="rz-text-wrap" TextStyle="TextStyle.Body1" TextAlign="TextAlign.Left">
+                <strong>Title</strong><br />
+                @ticket.Title
+            </RadzenText>
+            <RadzenText class="rz-text-wrap" TextStyle="TextStyle.Body1" TextAlign="TextAlign.Left">
+                <strong>Description</strong><br /> 
+                @ticket.Description
+            </RadzenText>            
+        </div>
+    </Template>
     <Columns>
         <RadzenDataGridColumn TItem="TicketResponse" Property="Id" Title="Id">
             <Template Context="data">
@@ -25,11 +41,11 @@
 
 
         
-        <RadzenDataGridColumn TItem="TicketResponse" Property="Id" Title="Action" Filterable="false">
+        @*<RadzenDataGridColumn TItem="TicketResponse" Property="Id" Title="Action" Filterable="false">
             <Template Context="data">
                 <RadzenButton ButtonStyle="ButtonStyle.Secondary" Shade="Shade.Lighter" Size="ButtonSize.ExtraSmall" @onclick="(() => {})" Icon="info" class="m-1" />
             </Template>
-        </RadzenDataGridColumn>
+        </RadzenDataGridColumn>*@
     </Columns>
 </RadzenDataGrid>
 

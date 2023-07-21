@@ -2,6 +2,7 @@
 using herodesknew.Domain.Entities;
 using herodesknew.Domain.Repositories;
 using herodesknew.Infrastructure.Contexts;
+using herodesknew.Infrastructure.Data.Mock;
 using System.Diagnostics;
 
 namespace herodesknew.Infrastructure.Data.Repositories;
@@ -37,7 +38,9 @@ internal sealed class TicketRepository : ITicketRepository
     }
 
     public async Task<(List<Ticket>, int)> GetByIdSupportAgentAsync(int idSupportAgent, List<Filter>? filter, int skip, int take)
-    {            
+    {
+        var tickMock = TicketMock.GenerateTicketsMock().Take(10);
+        return await Task.FromResult((tickMock.ToList(), 40));
         using var connection = helpdeskContext.CreateDbConnection();
         var filterStatus = 
             filter?
