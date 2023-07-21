@@ -59,15 +59,15 @@
         <RadzenDataGridColumn TItem="TicketResponse" Property="Status" Title="Status" />
         <RadzenDataGridColumn TItem="TicketResponse" Property="SlaUsed" Title="SLA" Filterable="false" />
         <RadzenDataGridColumn TItem="TicketResponse" Property="StartDate" Title="StartDate" FormatString="{0:d}" Filterable="false" />
-        <RadzenDataGridColumn TItem="TicketResponse" Property="StartDate" Title="EndDate" FormatString="{0:d}" Filterable="false" />
-
+@*        <RadzenDataGridColumn TItem="TicketResponse" Property="StartDate" Title="EndDate" FormatString="{0:d}" Filterable="false" />
+*@
 
         
-        @*<RadzenDataGridColumn TItem="TicketResponse" Property="Id" Title="Action" Filterable="false">
+        <RadzenDataGridColumn TItem="TicketResponse" Property="Id" Title="Actions" Filterable="false">
             <Template Context="data">
-                <RadzenButton ButtonStyle="ButtonStyle.Secondary" Shade="Shade.Lighter" Size="ButtonSize.ExtraSmall" @onclick="(() => {})" Icon="info" class="m-1" />
+                <RadzenButton Variant="Variant.Text" Size="ButtonSize.ExtraSmall" @onclick="(() => {})" ButtonStyle="ButtonStyle.Secondary" Text="Edit"/>
             </Template>
-        </RadzenDataGridColumn>*@
+        </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
 
