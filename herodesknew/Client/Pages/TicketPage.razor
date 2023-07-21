@@ -13,16 +13,21 @@
 
 <RadzenDataGrid TItem="TicketResponse" Data="@tickets" LoadData="@LoadData" Count="@totalCount" PageSize="10" IsLoading=@isLoading ShowExpandColumn AllowPaging AllowSorting AllowColumnResize AllowFiltering>
     <Columns>
-        <RadzenDataGridColumn TItem="TicketResponse" Property="Id" Title="Id" />
-        <RadzenDataGridColumn TItem="TicketResponse" Property="SlaUsed" Title="SLA" />
-        <RadzenDataGridColumn TItem="TicketResponse" Property="StartDate" Title="StartDate" FormatString="{0:d}" />
-        <RadzenDataGridColumn TItem="TicketResponse" Property="StartDate" Title="EndDate" FormatString="{0:d}" />
-
-
-        <RadzenDataGridColumn TItem="TicketResponse" Property="Status" Title="Status" />
-        <RadzenDataGridColumn TItem="TicketResponse" Property="OrderID" Title="Details">
+        <RadzenDataGridColumn TItem="TicketResponse" Property="Id" Title="Id">
             <Template Context="data">
-                <RadzenButton ButtonStyle="(data.Status == StatusEnum.OK ?ButtonStyle.Success : ButtonStyle.Info)" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.ExtraSmall" @onclick="(() => {})" Icon="@(data.Status == StatusEnum.OK ? "done" : "info")" class="m-1" Text="@data.Id.ToString()" />
+                <RadzenBadge Shade="Shade.Lighter" BadgeStyle="(data.Status == StatusEnum.OK ?BadgeStyle.Success : BadgeStyle.Info)" Text="@(data.Id.ToString())" />
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="TicketResponse" Property="Status" Title="Status" />
+        <RadzenDataGridColumn TItem="TicketResponse" Property="SlaUsed" Title="SLA" Filterable="false" />
+        <RadzenDataGridColumn TItem="TicketResponse" Property="StartDate" Title="StartDate" FormatString="{0:d}" Filterable="false" />
+        <RadzenDataGridColumn TItem="TicketResponse" Property="StartDate" Title="EndDate" FormatString="{0:d}" Filterable="false" />
+
+
+        
+        <RadzenDataGridColumn TItem="TicketResponse" Property="Id" Title="Action" Filterable="false">
+            <Template Context="data">
+                <RadzenButton ButtonStyle="ButtonStyle.Secondary" Shade="Shade.Lighter" Size="ButtonSize.ExtraSmall" @onclick="(() => {})" Icon="info" class="m-1" />
             </Template>
         </RadzenDataGridColumn>
     </Columns>
