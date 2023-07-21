@@ -1,6 +1,6 @@
 ﻿using Azure.Core;
 using herodesknew.Application.Attachments.Queries.GetAttachment;
-using herodesknew.Application.Tickets.Queries.GetTickets;
+using herodesknew.Application.Tickets.Queries.GetFilteredTickets;
 using herodesknew.Domain.Repositories;
 using herodesknew.Shared;
 using Microsoft.AspNetCore.Http;
@@ -16,11 +16,11 @@ namespace herodesknew.Server.Controllers
     public class TicketController : ControllerBase
     {
         private readonly ILogger<TicketController> _logger;
-        private readonly GetMembersQueryHandler _getMembersQueryHandler;
+        private readonly GetFilteredTicketsQueryHandler _getMembersQueryHandler;
         private readonly int _idSupportAgent;
 
         public TicketController(ILogger<TicketController> logger,
-                                GetMembersQueryHandler getMembersQueryHandler, IConfiguration configuration)
+                                GetFilteredTicketsQueryHandler getMembersQueryHandler, IConfiguration configuration)
         {
             _logger = logger;
             _getMembersQueryHandler = getMembersQueryHandler;
@@ -32,7 +32,7 @@ namespace herodesknew.Server.Controllers
         public async Task<IActionResult> GetAsync()
         {
             _logger.LogInformation("IdSupportAgent: {int}", _idSupportAgent);
-            var result = await _getMembersQueryHandler.Handle(new GetTicketsQuery() { IdSupportAgent = _idSupportAgent });
+            var result = await _getMembersQueryHandler.Handle(new GetFilteredTicketsQuery() { IdSupportAgent = _idSupportAgent });
             if (result.IsSuccess)
             {
                 return Ok(result.Value.ticketResponses);
@@ -47,7 +47,7 @@ namespace herodesknew.Server.Controllers
         public async Task<IActionResult> GetFilteredTickets([FromBody] List<Filter>? filters, int skip = 0, int take = 10)
         {
             _logger.LogInformation("IdSupportAgent: {idSupportAgent}", _idSupportAgent);
-            var result = await _getMembersQueryHandler.Handle(new GetTicketsQuery() { IdSupportAgent = _idSupportAgent, Filters = filters, Skip = skip,Take=take});
+            var result = await _getMembersQueryHandler.Handle(new GetFilteredTicketsQuery() { IdSupportAgent = _idSupportAgent, Filters = filters, Skip = skip,Take=take});
             if (result.IsSuccess)
             {
                 return Ok(new { Tickets =  result.Value.ticketResponses , TotalCount=result.Value.totalCount});

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.ResponseCompression;
 using herodesknew.Server.Configurations;
-using herodesknew.Application.Tickets.Queries.GetTickets;
 using herodesknew.Application.Attachments.Queries.GetAttachment;
+using herodesknew.Application.Tickets.Queries.GetFilteredTickets;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +12,7 @@ builder.Services.AddRazorPages();
 builder.Services.InfrastructureServiceInstall(builder.Configuration);
 
 //TODO: Refactory service install 
-builder.Services.AddTransient<GetMembersQueryHandler>();
+builder.Services.AddTransient<GetFilteredTicketsQueryHandler>();
 builder.Services.AddTransient<GetAttachmentQueryHandler>();
 //--------
 

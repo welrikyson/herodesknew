@@ -16,7 +16,7 @@ internal sealed class TicketRepository : ITicketRepository
         _helpdeskContext = helpdeskContext;
     }
 
-    public async Task<(List<Ticket>, int)> GetByIdSupportAgentAsync(int idSupportAgent, List<Filter>? filter, int skip, int take)
+    public async Task<(List<Ticket>, int)> GetFilteredTicketsAsync(int idSupportAgent, List<Filter>? filter, int skip, int take)
     {   
         using var connection = _helpdeskContext.CreateDbConnection();
         var filterStatus = 

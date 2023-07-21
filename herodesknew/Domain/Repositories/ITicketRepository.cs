@@ -9,7 +9,7 @@ namespace herodesknew.Domain.Repositories
 {
     public interface ITicketRepository
     {
-        Task<(List<Ticket> tickets, int totalCount)> GetByIdSupportAgentAsync(int idSupportAgent, List<Filter>? filter, int skip, int take);
+        Task<(List<Ticket> tickets, int totalCount)> GetFilteredTicketsAsync(int idSupportAgent, List<Filter>? filter, int skip, int take);
     }
 
     public class Filter
