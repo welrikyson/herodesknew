@@ -2,6 +2,7 @@
 using herodesknew.Domain.Entities;
 using herodesknew.Domain.Repositories;
 using herodesknew.Infrastructure.Contexts;
+using System.Diagnostics;
 
 namespace herodesknew.Infrastructure.Data.Repositories;
 
@@ -24,6 +25,7 @@ public class TicketQueryData
     public int? AttachmentID { get; set; }
     public string? AttachmentPath { get; set; }
     public string? AttachmentName { get; set; }
+    public int TotalCount { get; set; }
 }
 internal sealed class TicketRepository : ITicketRepository
 {
@@ -34,10 +36,17 @@ internal sealed class TicketRepository : ITicketRepository
         this.helpdeskContext = helpdeskContext;
     }
 
-    public async Task<List<Ticket>> GetByIdSupportAgentAsync(int idSupportAgent)
+    public async Task<(List<Ticket>, int)> GetByIdSupportAgentAsync(int idSupportAgent, List<Filter>? filter, int skip, int take)
     {            
         using var connection = helpdeskContext.CreateDbConnection();
-        string sql = """
+        var filterStatus = 
+            filter?
+                .Where(f => f.Property == nameof(Ticket.Status) && 
+                            Enum.TryParse<StatusEnum>(f.Value, out var _))
+                .Select((f) => (Value: Enum.GetName(Enum.Parse<StatusEnum>(f.Value)), Condition: "AND Status = @status"))
+                .SingleOrDefault();
+
+        string sql = $"""
                 SELECT
                     [p].[id] AS [ProblemID],
                     [p].[title] AS [ProblemTitle],
@@ -50,20 +59,24 @@ internal sealed class TicketRepository : ITicketRepository
                     [dbo].[fncConsumoSlaChamado]([p].[id]) AS [ProblemSLA],
                     [anexo].[ID] AS [AttachmentID],
                     [anexo].[UPL_NOME] AS [AttachmentName],
-                    [anexo].[UPL_CAMINHO] AS [AttachmentPath]
+                    [anexo].[UPL_CAMINHO] AS [AttachmentPath],
+                	[top10].[TotalCount]
                 FROM 
-                    [dbo].[problems] [p]
-                LEFT JOIN 
-                    [dbo].[TB_HLD_UPLOAD] [anexo] ON [p].[id] = [anexo].[ID]
-                WHERE 
-                    [p].[idAtuante] = @idSupportAgent
-                ORDER BY 
-                    [p].[id] DESC;                
+                    (
+                        SELECT DISTINCT [id], COUNT(*) OVER() AS [TotalCount]
+                        FROM [dbo].[problems]
+                        WHERE [idAtuante] = @idSupportAgent {filterStatus?.Condition ?? string.Empty}
+                        ORDER BY [id] DESC		
+                		OFFSET @skip ROWS FETCH NEXT @take ROWS ONLY
+                    ) AS top10
+                JOIN [dbo].[problems] [p] ON [top10].[id] = [p].[id]
+                LEFT JOIN [dbo].[TB_HLD_UPLOAD] [anexo] ON [p].[id] = [anexo].[ID]
+                ORDER BY [p].[id] DESC;                
                 """;
 
         var ticketQueryDatas = await connection.QueryAsync<TicketQueryData>(
             sql,
-            new { idSupportAgent }
+            new { idSupportAgent, skip,take, status = filterStatus?.Value }
         );
 
         var tickets = ticketQueryDatas
@@ -89,6 +102,6 @@ internal sealed class TicketRepository : ITicketRepository
                               }).ToList()
             }).ToList();
 
-        return tickets;
+        return (tickets, ticketQueryDatas?.FirstOrDefault()?.TotalCount ?? 0);
     }
 }

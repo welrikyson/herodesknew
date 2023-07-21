@@ -1,41 +1,68 @@
-﻿@page "/listagem-tickets"
+﻿@page "/ticket-list-view"
 
 @using System.Collections.Generic
 @using herodesknew.Application.Tickets.Queries.GetTickets;
 @using herodesknew.Domain.Entities;
+@using herodesknew.Domain.Repositories;
 @using herodesknew.Shared
 
 @inject HttpClient Http
 
-<h3>Listagem de Tickets</h3>
+<h3>Tickets List</h3>
 
-@if (tickets == null)
-{
-    <p>Carregando tickets...</p>
-}
-else
-{
-    <RadzenDataGrid TItem="TicketResponse" Data="@tickets" PageSize="10" ShowExpandColumn AllowPaging AllowSorting AllowColumnResize AllowFiltering>
-        <Columns>
-            <RadzenDataGridColumn TItem="TicketResponse" Property="Id" Title="Id" />
-            <RadzenDataGridColumn TItem="TicketResponse" Property="Title" Title="Title" />
+
+<RadzenDataGrid TItem="TicketResponse" Data="@tickets" LoadData="@LoadData" Count="@totalCount" PageSize="10" IsLoading=@isLoading ShowExpandColumn AllowPaging AllowSorting AllowColumnResize AllowFiltering>
+    <Columns>
+        <RadzenDataGridColumn TItem="TicketResponse" Property="Id" Title="Id" />
         <RadzenDataGridColumn TItem="TicketResponse" Property="SlaUsed" Title="SLA" />
-            <RadzenDataGridColumn TItem="TicketResponse" Property="Status" Title="Status" />
+        <RadzenDataGridColumn TItem="TicketResponse" Property="StartDate" Title="StartDate" FormatString="{0:d}" />
+        <RadzenDataGridColumn TItem="TicketResponse" Property="StartDate" Title="EndDate" FormatString="{0:d}" />
+
+
+        <RadzenDataGridColumn TItem="TicketResponse" Property="Status" Title="Status" />
         <RadzenDataGridColumn TItem="TicketResponse" Property="OrderID" Title="Details">
-                <Template Context="data">
-                <RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.ExtraSmall"  @onclick="(() => {})" Icon="info" class="m-1" Text="@data.Id.ToString()" />
-                </Template>
-            </RadzenDataGridColumn>
-        </Columns>
-    </RadzenDataGrid>
-}
+            <Template Context="data">
+                <RadzenButton ButtonStyle="(data.Status == StatusEnum.OK ?ButtonStyle.Success : ButtonStyle.Info)" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.ExtraSmall" @onclick="(() => {})" Icon="@(data.Status == StatusEnum.OK ? "done" : "info")" class="m-1" Text="@data.Id.ToString()" />
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
 
 @code {
     private TicketResponse[]? tickets;
-    
-    protected override async Task OnInitializedAsync()
-    {
-        tickets = await Http.GetFromJsonAsync<TicketResponse[]>("Ticket");
+    bool isLoading = false;
+    private int totalCount;
 
+    async Task LoadData(LoadDataArgs args)
+    {
+        isLoading = true;
+        var filtes = args.Filters
+            .Select((dataGridFilter) => new Filter()
+                {
+                    Operator = dataGridFilter.FilterOperator.GetDisplayDescription(),
+                    Property = dataGridFilter.Property,
+                    Value = dataGridFilter.FilterValue.ToString() ?? string.Empty,
+                });
+
+        var response = await Http.PostAsJsonAsync($"Ticket/GetFilteredTickets?skip={args.Skip ?? 0}&take={args.Top ?? 10}", filtes);
+        if (response.IsSuccessStatusCode)
+        {
+            var contentString = await response.Content.ReadAsStringAsync();
+            var result = await response.Content.ReadFromJsonAsync<GetFiltredTicketsResponse>();
+            tickets = result?.Tickets.ToArray();
+            totalCount = result?.TotalCount ?? 0;
+        }
+        else
+        {
+            tickets = Array.Empty<TicketResponse>();
+            totalCount = tickets.Count();
+        }
+
+        isLoading = false;
+    }
+    public class GetFiltredTicketsResponse
+    {
+        public List<TicketResponse> Tickets { get; set; }
+        public int TotalCount { get; set; }
     }
 }

@@ -18,19 +18,19 @@ namespace herodesknew.Application.Tickets.Queries.GetTickets
             _ticketRepository = ticketRepository;
         }
 
-        public async Task<Result<List<TicketResponse>>> Handle(GetTicketsQuery getTicketsQuery)
+        public async Task<Result<(List<TicketResponse> ticketResponses, int totalCount)>> Handle(GetTicketsQuery getTicketsQuery)
         {
-            var tickets = await _ticketRepository.GetByIdSupportAgentAsync(11981);
+            (var tickets,var totalCount )= await _ticketRepository.GetByIdSupportAgentAsync(11981, getTicketsQuery.Filters,getTicketsQuery.Skip,getTicketsQuery.Take);
 
             if (tickets.Count == 0)
             {
-                return Result.Failure<List<TicketResponse>>(
+                return Result.Failure<(List<TicketResponse>, int totalCount)>(
                           DomainErrors.Member.NotExist);
             }
 
             List<TicketResponse> ticketReponseList = tickets.Select(MapTicketToTicketResponse).ToList();
 
-            return Result.Success(ticketReponseList);
+            return Result.Success((ticketReponseList,totalCount));
 
             static TicketResponse MapTicketToTicketResponse(Domain.Entities.Ticket ticket)
             =>
