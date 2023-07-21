@@ -17,18 +17,20 @@ namespace herodesknew.Server.Controllers
     {
         private readonly ILogger<TicketController> _logger;
         private readonly GetMembersQueryHandler _getMembersQueryHandler;
+        private readonly int _idSupportAgent;
 
         public TicketController(ILogger<TicketController> logger,
-                                GetMembersQueryHandler getMembersQueryHandler)
+                                GetMembersQueryHandler getMembersQueryHandler, IConfiguration configuration)
         {
             _logger = logger;
             _getMembersQueryHandler = getMembersQueryHandler;
+            _idSupportAgent = configuration.GetValue<int>("HelpdeskSettings:IdAtuante");
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
-            var result = await _getMembersQueryHandler.Handle(new GetTicketsQuery());
+            var result = await _getMembersQueryHandler.Handle(new GetTicketsQuery() { IdSupportAgent = _idSupportAgent });
             if (result.IsSuccess)
             {
                 return Ok(result.Value.ticketResponses);
@@ -43,7 +45,7 @@ namespace herodesknew.Server.Controllers
         [HttpPost("GetFilteredTickets")]
         public async Task<IActionResult> GetFilteredTickets([FromBody] List<Filter>? filters, int skip = 0, int take = 10)
         {
-            var result = await _getMembersQueryHandler.Handle(new GetTicketsQuery() { Filters = filters, Skip = skip,Take=take});
+            var result = await _getMembersQueryHandler.Handle(new GetTicketsQuery() { IdSupportAgent = _idSupportAgent, Filters = filters, Skip = skip,Take=take});
             if (result.IsSuccess)
             {
                 return Ok(new { Tickets =  result.Value.ticketResponses , TotalCount=result.Value.totalCount});

@@ -17,9 +17,7 @@ internal sealed class TicketRepository : ITicketRepository
     }
 
     public async Task<(List<Ticket>, int)> GetByIdSupportAgentAsync(int idSupportAgent, List<Filter>? filter, int skip, int take)
-    {
-        //var tickMock = TicketMock.GenerateTicketsMock().Take(10);
-        //return await Task.FromResult((tickMock.ToList(), 40));
+    {   
         using var connection = _helpdeskContext.CreateDbConnection();
         var filterStatus = 
             filter?

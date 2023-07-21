@@ -11,5 +11,6 @@ namespace herodesknew.Application.Tickets.Queries.GetTickets
         public List<Domain.Repositories.Filter>? Filters { get; set; }
         public int Skip { get; set; }
         public int Take { get; set; }
+        public required int IdSupportAgent { get; set; }
     }    
 }

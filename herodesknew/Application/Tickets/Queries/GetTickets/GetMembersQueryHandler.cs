@@ -20,7 +20,7 @@ namespace herodesknew.Application.Tickets.Queries.GetTickets
 
         public async Task<Result<(List<TicketResponse> ticketResponses, int totalCount)>> Handle(GetTicketsQuery getTicketsQuery)
         {
-            (var tickets,var totalCount )= await _ticketRepository.GetByIdSupportAgentAsync(11981, getTicketsQuery.Filters,getTicketsQuery.Skip,getTicketsQuery.Take);
+            (var tickets,var totalCount )= await _ticketRepository.GetByIdSupportAgentAsync(getTicketsQuery.IdSupportAgent, getTicketsQuery.Filters,getTicketsQuery.Skip,getTicketsQuery.Take);
 
             if (tickets.Count == 0)
             {

@@ -42,27 +42,21 @@
         </div>
     </Template>
     <Columns>
-        <RadzenDataGridColumn TItem="TicketResponse" Property="Id" Title="Id">
+
+        <RadzenDataGridColumn TItem="TicketResponse" Property="Id" Title="Id"/>
+        <RadzenDataGridColumn TItem="TicketResponse" Property="Status" Title="Status">
             <Template Context="data">
                 <RadzenBadge Shade="Shade.Lighter" 
-                    BadgeStyle="(data.Status switch
-                        {                   
-                            StatusEnum.OK => BadgeStyle.Success,
-                            StatusEnum.DP => BadgeStyle.Info,
-                            StatusEnum.CA => BadgeStyle.Success,
-                            _ => BadgeStyle.Warning
-                        })" 
-                    
-                    Text="@(data.Id.ToString())" />
+                    BadgeStyle="(data.Status switch {
+                        StatusEnum.OK => BadgeStyle.Success, 
+                        StatusEnum.DP => BadgeStyle.Info,
+                        StatusEnum.CA => BadgeStyle.Success,
+                                    _ => BadgeStyle.Warning})"                     
+                    Text="@(data.Status.ToString())" />
             </Template>
-        </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="TicketResponse" Property="Status" Title="Status" />
+        </RadzenDataGridColumn>        
         <RadzenDataGridColumn TItem="TicketResponse" Property="SlaUsed" Title="SLA" Filterable="false" />
         <RadzenDataGridColumn TItem="TicketResponse" Property="StartDate" Title="StartDate" FormatString="{0:d}" Filterable="false" />
-@*        <RadzenDataGridColumn TItem="TicketResponse" Property="StartDate" Title="EndDate" FormatString="{0:d}" Filterable="false" />
-*@
-
-        
         <RadzenDataGridColumn TItem="TicketResponse" Property="Id" Title="Actions" Filterable="false">
             <Template Context="data">
                 <RadzenButton Variant="Variant.Text" Size="ButtonSize.ExtraSmall" @onclick="(() => {})" ButtonStyle="ButtonStyle.Secondary" Text="Edit"/>
