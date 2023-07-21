@@ -24,12 +24,14 @@ namespace herodesknew.Server.Controllers
         {
             _logger = logger;
             _getMembersQueryHandler = getMembersQueryHandler;
-            _idSupportAgent = configuration.GetValue<int>("HelpdeskSettings:IdAtuante");
+            _idSupportAgent = configuration.GetValue<int>("HelpdeskSettings:IdAtuante");            
+
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
+            _logger.LogInformation("IdSupportAgent: {int}", _idSupportAgent);
             var result = await _getMembersQueryHandler.Handle(new GetTicketsQuery() { IdSupportAgent = _idSupportAgent });
             if (result.IsSuccess)
             {
@@ -38,13 +40,13 @@ namespace herodesknew.Server.Controllers
             else
             {
                 return NotFound();
-            }
-            
+            }            
         }
 
         [HttpPost("GetFilteredTickets")]
         public async Task<IActionResult> GetFilteredTickets([FromBody] List<Filter>? filters, int skip = 0, int take = 10)
         {
+            _logger.LogInformation("IdSupportAgent: {idSupportAgent}", _idSupportAgent);
             var result = await _getMembersQueryHandler.Handle(new GetTicketsQuery() { IdSupportAgent = _idSupportAgent, Filters = filters, Skip = skip,Take=take});
             if (result.IsSuccess)
             {
