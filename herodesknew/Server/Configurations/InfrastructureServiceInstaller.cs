@@ -17,8 +17,7 @@ namespace herodesknew.Server.Configurations
                           .UsingRegistrationStrategy(RegistrationStrategy.Skip)
                           .AsMatchingInterface()
                           .WithScopedLifetime())
-                  .AddTransient<HelpdeskContext>()
-                  .AddTransient<GetMembersQueryHandler>();
+                  .AddTransient<HelpdeskContext>();
         }
     }
 }

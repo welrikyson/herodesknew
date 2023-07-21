@@ -1,9 +1,13 @@
-﻿using herodesknew.Application.Tickets.Queries.GetTickets;
+﻿using Azure.Core;
+using herodesknew.Application.Attachments.Queries.GetAttachment;
+using herodesknew.Application.Tickets.Queries.GetTickets;
 using herodesknew.Domain.Repositories;
 using herodesknew.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Radzen.Blazor;
+using System.IO;
+using System.Net.Mime;
 
 namespace herodesknew.Server.Controllers
 {
@@ -14,7 +18,8 @@ namespace herodesknew.Server.Controllers
         private readonly ILogger<TicketController> _logger;
         private readonly GetMembersQueryHandler _getMembersQueryHandler;
 
-        public TicketController(ILogger<TicketController> logger, GetMembersQueryHandler getMembersQueryHandler)
+        public TicketController(ILogger<TicketController> logger,
+                                GetMembersQueryHandler getMembersQueryHandler)
         {
             _logger = logger;
             _getMembersQueryHandler = getMembersQueryHandler;
@@ -47,6 +52,6 @@ namespace herodesknew.Server.Controllers
             {
                 return NotFound();
             }
-        }
+        }        
     }
 }

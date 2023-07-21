@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.ResponseCompression;
 using herodesknew.Server.Configurations;
+using herodesknew.Application.Tickets.Queries.GetTickets;
+using herodesknew.Application.Attachments.Queries.GetAttachment;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,6 +10,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.InfrastructureServiceInstall(builder.Configuration);
+
+//TODO: Refactory service install 
+builder.Services.AddTransient<GetMembersQueryHandler>();
+builder.Services.AddTransient<GetAttachmentQueryHandler>();
+//--------
+
 builder.Services.AddOpenApiDocument( configure => configure.Title = "herodesknew api");
 
 var app = builder.Build();

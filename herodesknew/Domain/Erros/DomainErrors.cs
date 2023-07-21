@@ -42,6 +42,13 @@ namespace herodesknew.Domain.Erros
                 "Can't accept invitation for expired gathering");
         }
 
+
+        public static class Attachment
+        {
+            public static readonly Func<int, Error> NotFound = fileName => new Error(
+                "Attachment.NotFound",
+                $"The Attachment with the identifier {fileName} was not found.");
+        }
         public static class Invitation
         {
             public static readonly Func<Guid, Error> AlreadyAccepted = id => new Error(

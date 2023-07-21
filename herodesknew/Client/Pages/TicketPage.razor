@@ -25,13 +25,35 @@
             <RadzenText class="rz-text-wrap" TextStyle="TextStyle.Body1" TextAlign="TextAlign.Left">
                 <strong>Description</strong><br /> 
                 @ticket.Description
-            </RadzenText>            
+            </RadzenText>
+            @if (ticket?.Attachments != null && ticket.Attachments.Count() > 0)
+            {
+                <RadzenText class="rz-text-wrap" TextStyle="TextStyle.Body1" TextAlign="TextAlign.Left">
+                    <strong>Attachments</strong><br />
+                    <ul>
+                        @foreach (var attachment in ticket.Attachments)
+                        {
+                            <li> <RadzenLink Path=@($"/Attachment/{attachment.Id}") Text=@attachment.Id.ToString() target="_blank"></RadzenLink> </li>
+                        }
+                    </ul>
+                    
+                </RadzenText>
+            }
         </div>
     </Template>
     <Columns>
         <RadzenDataGridColumn TItem="TicketResponse" Property="Id" Title="Id">
             <Template Context="data">
-                <RadzenBadge Shade="Shade.Lighter" BadgeStyle="(data.Status == StatusEnum.OK ?BadgeStyle.Success : BadgeStyle.Info)" Text="@(data.Id.ToString())" />
+                <RadzenBadge Shade="Shade.Lighter" 
+                    BadgeStyle="(data.Status switch
+                        {                   
+                            StatusEnum.OK => BadgeStyle.Success,
+                            StatusEnum.DP => BadgeStyle.Info,
+                            StatusEnum.CA => BadgeStyle.Success,
+                            _ => BadgeStyle.Warning
+                        })" 
+                    
+                    Text="@(data.Id.ToString())" />
             </Template>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="TicketResponse" Property="Status" Title="Status" />

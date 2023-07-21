@@ -7,41 +7,20 @@ using System.Diagnostics;
 
 namespace herodesknew.Infrastructure.Data.Repositories;
 
-
-public class TicketQueryData
-{
-    public int ProblemID { get; set; }
-    public required string ProblemEmail { get; set; }
-    public required string ProblemTitle { get; set; }
-    public required string ProblemDescription { get; set; }
-    public required int ProblemSLA { get; set; }
-    public required string ProblemStatus { get; set; }
-
-    public DateTime ProblemStartDate { get; set; }
-
-    public DateTime ProblemCloseDate { get; set; }
-
-    public required int DepartmentID { get; set; }
-
-    public int? AttachmentID { get; set; }
-    public string? AttachmentPath { get; set; }
-    public string? AttachmentName { get; set; }
-    public int TotalCount { get; set; }
-}
 internal sealed class TicketRepository : ITicketRepository
 {
-    private readonly HelpdeskContext helpdeskContext;
+    private readonly HelpdeskContext _helpdeskContext;
 
     public TicketRepository(HelpdeskContext helpdeskContext)
     {
-        this.helpdeskContext = helpdeskContext;
+        _helpdeskContext = helpdeskContext;
     }
 
     public async Task<(List<Ticket>, int)> GetByIdSupportAgentAsync(int idSupportAgent, List<Filter>? filter, int skip, int take)
     {
-        var tickMock = TicketMock.GenerateTicketsMock().Take(10);
-        return await Task.FromResult((tickMock.ToList(), 40));
-        using var connection = helpdeskContext.CreateDbConnection();
+        //var tickMock = TicketMock.GenerateTicketsMock().Take(10);
+        //return await Task.FromResult((tickMock.ToList(), 40));
+        using var connection = _helpdeskContext.CreateDbConnection();
         var filterStatus = 
             filter?
                 .Where(f => f.Property == nameof(Ticket.Status) && 
@@ -60,7 +39,7 @@ internal sealed class TicketRepository : ITicketRepository
                     [p].[start_date] AS [ProblemStartDate],
                     [p].[close_date] AS [ProblemCloseDate],
                     [dbo].[fncConsumoSlaChamado]([p].[id]) AS [ProblemSLA],
-                    [anexo].[ID] AS [AttachmentID],
+                    [anexo].[COD_UPLOAD] AS [AttachmentID],
                     [anexo].[UPL_NOME] AS [AttachmentName],
                     [anexo].[UPL_CAMINHO] AS [AttachmentPath],
                 	[top10].[TotalCount]
@@ -106,5 +85,26 @@ internal sealed class TicketRepository : ITicketRepository
             }).ToList();
 
         return (tickets, ticketQueryDatas?.FirstOrDefault()?.TotalCount ?? 0);
+    }
+
+    public class TicketQueryData
+    {
+        public int ProblemID { get; set; }
+        public required string ProblemEmail { get; set; }
+        public required string ProblemTitle { get; set; }
+        public required string ProblemDescription { get; set; }
+        public required int ProblemSLA { get; set; }
+        public required string ProblemStatus { get; set; }
+
+        public DateTime ProblemStartDate { get; set; }
+
+        public DateTime ProblemCloseDate { get; set; }
+
+        public required int DepartmentID { get; set; }
+
+        public int? AttachmentID { get; set; }
+        public string? AttachmentPath { get; set; }
+        public string? AttachmentName { get; set; }
+        public int TotalCount { get; set; }
     }
 }
