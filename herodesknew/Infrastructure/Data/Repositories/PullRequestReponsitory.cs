@@ -1,131 +1,140 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using herodesknew.Domain.Entities;
+using herodesknew.Domain.Repositories;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace herodesknew.Infrastructure.Data.Repositories
 {
-    public sealed class PullRequestReponsitory
+    public sealed class PullRequestRepository : IPullRequestRepository
+    {
+        private readonly IPullRequestFetcher pullRequestFetcher;
+
+        public PullRequestRepository(IPullRequestFetcher pullRequestFetcher)
+        {
+            this.pullRequestFetcher = pullRequestFetcher;
+        }
+
+        public IEnumerable<PullRequest> GetSolutions()
+        {
+            return pullRequestFetcher.FetchPullRequests();
+        }
+    }
+
+    public class PullRequestFetcher : IPullRequestFetcher
     {
         private readonly string _fileName;
+        private readonly string _baseFolder;
+        private readonly ISpreadsheetHelper _spreadsheetHelper;
+        private readonly IUrlParser _urlParser;
 
-        public PullRequestReponsitory(IConfiguration configuration)
+        public PullRequestFetcher(IConfiguration configuration, ISpreadsheetHelper spreadsheetHelper, IUrlParser urlParser)
         {
-            _fileName = configuration["Files:PlanoDeploy"]!;
-
+            _fileName = configuration["Files:PlanoDeploy"] ?? throw new ArgumentException("Files:PlanoDeploy not found in configuration.");
+            _baseFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "MS\\src");
+            _spreadsheetHelper = spreadsheetHelper;
+            _urlParser = urlParser;
         }
 
-        public IEnumerable<PullRequest>? GetSolutions(int idTicket)
+        public IEnumerable<PullRequest> FetchPullRequests()
         {
-            var pastaSlt = GetSolutionFolder(idTicket);
+            return Directory.EnumerateDirectories(_baseFolder, "*", SearchOption.AllDirectories)
+                .SelectMany(GetPullRequestsFromSolutionFolder)
+                .ToList();
+        }
 
-            if (pastaSlt == null) return null;
+        private IEnumerable<PullRequest> GetPullRequestsFromSolutionFolder(string solutionFolder)
+        {
+            string planoDeployPath = Path.Combine(solutionFolder, _fileName);
+            string? pullRequestUrl = GetPullRequestUrlFromPath(planoDeployPath);
 
-            string[] subpastas = Directory.Exists(pastaSlt) ?
-                Directory.GetDirectories(pastaSlt)
-                : Array.Empty<string>();
-
-            var idSolutions = subpastas.Select(Path.GetFileName)
-                                       .Where(nome => int.TryParse(nome, out _))
-                                       .Select(nome => int.Parse(nome!));
-            if (!idSolutions.Any()) return null;
-
-            var pullRequests = new List<PullRequest>();
-            foreach (var idSolution in idSolutions)
+            if (pullRequestUrl != null && _urlParser.TryGetPullRequestNumberFromUrl(pullRequestUrl, out int pullRequestNumber))
             {
-                string planoDeploy = Path.Combine(pastaSlt, $"{idSolution}", _fileName);
-
-                string? pullRequestUrl = null;
-                if (File.Exists(planoDeploy))
+                int ticketId = GetTicketIdFromFolder(Path.GetDirectoryName(solutionFolder));
+                yield return new PullRequest()
                 {
-                    const string RefCellPullRequestUrl = "D44";
-
-                    using var document = SpreadsheetDocument.Open(planoDeploy, true);
-
-                    var worksheetPart = document.WorkbookPart?.WorksheetParts.Last();
-                    var cells = worksheetPart?.Worksheet.Descendants<Cell>();
-                    var cellPullRequest = cells?.FirstOrDefault(c => c.CellReference == RefCellPullRequestUrl)?.CellValue;
-                    pullRequestUrl = cellPullRequest?.Text;
-
-                }
-
-                if(pullRequestUrl != null )
-                {
-                    var pullRequestNumber = GetPullRequestNumberFromUrl(pullRequestUrl);
-                    if(pullRequestNumber != null )
-                    {
-                        var pullRequest = new PullRequest()
-                        {
-                            TicketId = idTicket,
-                            Id = pullRequestNumber.Value
-                        };
-
-                        pullRequests.Add(pullRequest);
-                    }                    
-                }
+                    TicketId = ticketId,
+                    Id = pullRequestNumber
+                };
             }
-            return pullRequests;
         }
 
-        public string? GetSolutionFolder(int idTicket)
+        private string? GetPullRequestUrlFromPath(string planoDeployPath)
         {
-            var pastaBase = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "MS\\src");
-            var pastaTicket = EncontrarPastaPorID(Path.Combine(pastaBase, "HD"), idTicket);
-            if (pastaTicket == null) return null;
-            return Path.Combine(pastaTicket, "SLT");
-        }
-
-        static string? EncontrarPastaPorID(string pastaBase, int idProcurado)
-        {
-            Queue<string> fila = new Queue<string>();
-            fila.Enqueue(pastaBase);
-
-            while (fila.Count > 0)
-            {
-                string pastaAtual = fila.Dequeue();
-                string[] subpastas = Directory.GetDirectories(pastaAtual);
-
-                foreach (string subpasta in subpastas)
-                {
-                    string nomeSubpasta = Path.GetFileName(subpasta);
-                    int id;
-
-                    if (int.TryParse(nomeSubpasta, out id))
-                    {
-                        if (id == idProcurado)
-                        {
-                            return subpasta; // Pasta encontrada!
-                        }
-                    }
-
-                    fila.Enqueue(subpasta);
-                }
-            }
-
-            return null; // Pasta não encontrada
-        }
-
-        public int? GetPullRequestNumberFromUrl(string url)
-        {
-            string pattern = @"/pullrequest/(\d+)";
-            Match match = Regex.Match(url, pattern);
-
-            if (!match.Success)
+            if (!_spreadsheetHelper.FileExists(planoDeployPath))
             {
                 return null;
             }
 
-            return int.TryParse(match.Groups[1].Value, out int pullRequestNumber) ? 
-                pullRequestNumber : 
-                null;
+            const string RefCellPullRequestUrl = "D44";
+            return _spreadsheetHelper.GetCellValue(planoDeployPath, RefCellPullRequestUrl);
         }
-        
+
+        private int GetTicketIdFromFolder(string ticketFolder)
+        {
+            if (int.TryParse(Path.GetFileName(ticketFolder), out int ticketId))
+            {
+                return ticketId;
+            }
+
+            // Return a default value or handle the error case based on your application's requirements.
+            // For example, you could throw an exception here if the folder name doesn't contain a valid ticket ID.
+            return -1; // Change this to an appropriate default value or throw an exception.
+        }
+    }
+
+    public interface IPullRequestFetcher
+    {
+        IEnumerable<PullRequest> FetchPullRequests();
+    }
+
+    public interface ISpreadsheetHelper
+    {
+        bool FileExists(string filePath);
+        string? GetCellValue(string filePath, string cellReference);
+    }
+
+    public interface IUrlParser
+    {
+        bool TryGetPullRequestNumberFromUrl(string url, out int pullRequestNumber);
+    }
+
+    public class SpreadsheetHelper : ISpreadsheetHelper
+    {
+        public bool FileExists(string filePath)
+        {
+            return File.Exists(filePath);
+        }
+
+        public string? GetCellValue(string filePath, string cellReference)
+        {
+            using var document = SpreadsheetDocument.Open(filePath, true);
+            var worksheetPart = document.WorkbookPart?.WorksheetParts.Last();
+            var cells = worksheetPart?.Worksheet.Descendants<Cell>();
+            var cell = cells?.FirstOrDefault(c => c.CellReference == cellReference);
+            return cell?.CellValue?.Text;
+        }
+    }
+
+    public class UrlParser : IUrlParser
+    {
+        public bool TryGetPullRequestNumberFromUrl(string url, out int pullRequestNumber)
+        {
+            const string pattern = @"/pullrequest/(\d+)";
+            var match = System.Text.RegularExpressions.Regex.Match(url, pattern);
+
+            if (!match.Success || !int.TryParse(match.Groups[1].Value, out pullRequestNumber))
+            {
+                pullRequestNumber = 0;
+                return false;
+            }
+
+            return true;
+        }
     }
 }
