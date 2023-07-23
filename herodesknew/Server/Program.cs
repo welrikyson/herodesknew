@@ -2,6 +2,7 @@
 using herodesknew.Server.Configurations;
 using herodesknew.Application.Attachments.Queries.GetAttachment;
 using herodesknew.Application.Tickets.Queries.GetFilteredTickets;
+using herodesknew.Infrastructure.Data.Contexts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,7 @@ builder.Services.InfrastructureServiceInstall(builder.Configuration);
 //TODO: Refactory service install 
 builder.Services.AddTransient<GetFilteredTicketsQueryHandler>();
 builder.Services.AddTransient<GetAttachmentQueryHandler>();
+builder.Services.AddDbContext<HerodesknewDbContext>();
 //--------
 
 builder.Services.AddOpenApiDocument( configure => configure.Title = "herodesknew api");

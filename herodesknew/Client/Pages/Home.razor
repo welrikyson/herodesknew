@@ -40,22 +40,4 @@ else
     private DateTime firstDayOfMonth;
 
     private TicketResponse[]? tickets;
-
-    protected override async Task OnInitializedAsync()
-    {
-        //tickets = await Http.GetFromJsonAsync<TicketResponse[]>("Ticket");
-        //if (tickets == null) return;
-
-        //firstDayOfMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
-
-        //// Filtrar apenas os tickets com a data de abertura maior que o primeiro dia do mês
-        //List<TicketResponse> ticketsOpenedAfterFirstDay = tickets.Where(ticket => ticket.StartDate > firstDayOfMonth).ToList();
-        
-        //totalTicketsEmAnalise = ticketsOpenedAfterFirstDay.Count(t => t.Status == StatusEnum.EA);
-        //totalTicketsFechados = ticketsOpenedAfterFirstDay.Count(t => t.Status == StatusEnum.OK);
-        //slaMedioResolucao = Math.Round(ticketsOpenedAfterFirstDay
-        //    .Where(t => t.Status == StatusEnum.OK)
-        //    .Select(t => t.SlaUsed).DefaultIfEmpty().Average(),2);
-        
-    }    
 }
