@@ -14,7 +14,7 @@ namespace herodesknew.Infrastructure.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<PullRequest> builder)
         {            
-            builder.HasKey(x => x.Url);
+            builder.HasKey(x => x.Id);
         }
     }
 }
