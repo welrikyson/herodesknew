@@ -49,6 +49,13 @@ namespace herodesknew.Domain.Erros
                 "Attachment.NotFound",
                 $"The Attachment with the identifier {fileName} was not found.");
         }
+
+        public static class PullRequest
+        {
+            public static readonly Func<int, Error> NotFound = fileName => new Error(
+                "Attachment.NotFound",
+                $"The Attachment with the identifier {fileName} was not found.");
+        }
         public static class Invitation
         {
             public static readonly Func<Guid, Error> AlreadyAccepted = id => new Error(

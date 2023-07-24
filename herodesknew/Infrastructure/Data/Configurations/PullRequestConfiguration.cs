@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static herodesknew.Domain.Erros.DomainErrors;
 using herodesknew.Domain.Entities;
 
 namespace herodesknew.Infrastructure.Data.Configurations

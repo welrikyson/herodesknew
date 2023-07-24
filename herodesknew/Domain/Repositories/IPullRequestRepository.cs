@@ -5,7 +5,7 @@ namespace herodesknew.Domain.Repositories
 {
 	public interface IPullRequestRepository
 	{
-        IEnumerable<PullRequest> GetSolutions();
+        IEnumerable<PullRequest> GetPullRequests();
     }
 }
 

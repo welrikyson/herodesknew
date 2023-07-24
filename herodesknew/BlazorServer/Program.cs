@@ -1,4 +1,5 @@
 using herodesknew.Application.Attachments.Queries.GetAttachment;
+using herodesknew.Application.PullRequests.Queries.GetPullRequests;
 using herodesknew.Application.Tickets.Queries.GetFilteredTickets;
 using herodesknew.BlazorServer.Configurations;
 using herodesknew.BlazorServer.Data;
@@ -28,6 +29,7 @@ builder.Services.InfrastructureServiceInstall(builder.Configuration);
 //TODO: Refactory service install 
 builder.Services.AddTransient<GetFilteredTicketsQueryHandler>();
 builder.Services.AddTransient<GetAttachmentQueryHandler>();
+builder.Services.AddTransient<GetPullRequestsQueryHandler>();
 builder.Services.AddDbContext<HerodesknewDbContext>();
 //--------
 

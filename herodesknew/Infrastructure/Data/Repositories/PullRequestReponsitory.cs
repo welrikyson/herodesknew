@@ -20,7 +20,7 @@ namespace herodesknew.Infrastructure.Data.Repositories
             this.pullRequestFetcher = pullRequestFetcher;
         }
 
-        public IEnumerable<PullRequest> GetSolutions()
+        public IEnumerable<PullRequest> GetPullRequests()
         {
             return pullRequestFetcher.FetchPullRequests();
         }
@@ -75,7 +75,7 @@ namespace herodesknew.Infrastructure.Data.Repositories
             return _spreadsheetHelper.GetCellValue(planoDeployPath, RefCellPullRequestUrl);
         }
 
-        private int GetTicketIdFromFolder(string ticketFolder)
+        private int GetTicketIdFromFolder(string? ticketFolder)
         {
             if (int.TryParse(Path.GetFileName(ticketFolder), out int ticketId))
             {
