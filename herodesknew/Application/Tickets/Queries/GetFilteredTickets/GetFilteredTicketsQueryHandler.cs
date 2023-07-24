@@ -43,10 +43,10 @@ public sealed class GetFilteredTicketsQueryHandler
                 Title = ticket.Title,
                 UserEmail = ticket.UserEmail,
                 Attachments = ticket.Attachments,
+                PullRequests = ticket.PullRequests,
                 CloseDate = ticket.CloseDate,
                 StartDate = ticket.StartDate,
                 Status = ticket.Status,
-                Solutions = ticket.Solutions,
             };
     }
 }

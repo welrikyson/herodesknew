@@ -43,6 +43,19 @@
 
                 </RadzenText>
             }
+            @if (ticket?.PullRequests != null && ticket.PullRequests.Count() > 0)
+            {
+                <RadzenText class="rz-text-wrap" TextStyle="TextStyle.Body1" TextAlign="TextAlign.Left">
+                    <strong>Pull Requests</strong><br />
+                    <ul>
+                        @foreach (var pullRequest in ticket.PullRequests)
+                        {
+                            <li> <RadzenLink Path=@($"https://dev.azure.com/simp-cloud/SQL/_git/SQL/pullrequest/{pullRequest.Id}") Text=@pullRequest.Id.ToString() target="_blank"></RadzenLink> </li>
+                        }
+                    </ul>
+
+                </RadzenText>
+            }
         </div>
     </Template>
     <Columns>

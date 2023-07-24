@@ -2,6 +2,8 @@
 using DocumentFormat.OpenXml.Spreadsheet;
 using herodesknew.Domain.Entities;
 using herodesknew.Domain.Repositories;
+using herodesknew.Infrastructure.Data.Contexts;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -13,16 +15,26 @@ namespace herodesknew.Infrastructure.Data.Repositories
 {
     public sealed class PullRequestRepository : IPullRequestRepository
     {
-        private readonly IPullRequestFetcher pullRequestFetcher;
+        private readonly HerodesknewDbContext _herodesknewDbContext;
 
-        public PullRequestRepository(IPullRequestFetcher pullRequestFetcher)
+        public PullRequestRepository(HerodesknewDbContext herodesknewDbContext)
+        {     
+            _herodesknewDbContext = herodesknewDbContext;
+        }
+
+        public void AddPullRequests(List<PullRequest> pullRequests)
         {
-            this.pullRequestFetcher = pullRequestFetcher;
+            var existingPullRequestIds = _herodesknewDbContext.PullRequests.Select(t => t.Id).ToList();
+            var newPullRequests = pullRequests.Where(t => t.Id> 0 && !existingPullRequestIds.Contains(t.Id));
+
+            // Adiciona apenas os tickets que ainda não existem no banco de dados.
+            _herodesknewDbContext.PullRequests.AddRange(newPullRequests);
+            _herodesknewDbContext.SaveChanges();
         }
 
         public IEnumerable<PullRequest> GetPullRequests()
         {
-            return pullRequestFetcher.FetchPullRequests();
+            return _herodesknewDbContext.PullRequests.ToList();
         }
     }
 
@@ -55,7 +67,7 @@ namespace herodesknew.Infrastructure.Data.Repositories
 
             if (pullRequestUrl != null && _urlParser.TryGetPullRequestNumberFromUrl(pullRequestUrl, out int pullRequestNumber))
             {
-                int ticketId = GetTicketIdFromFolder(Path.GetDirectoryName(solutionFolder));
+                int ticketId = GetTicketIdFromPath(planoDeployPath);
                 yield return new PullRequest()
                 {
                     TicketId = ticketId,
@@ -75,15 +87,30 @@ namespace herodesknew.Infrastructure.Data.Repositories
             return _spreadsheetHelper.GetCellValue(planoDeployPath, RefCellPullRequestUrl);
         }
 
-        private int GetTicketIdFromFolder(string? ticketFolder)
+        private int GetTicketIdFromPath(string? planoDeployPath)
         {
-            if (int.TryParse(Path.GetFileName(ticketFolder), out int ticketId))
+            if (planoDeployPath == null || !_spreadsheetHelper.FileExists(planoDeployPath))
             {
-                return ticketId;
+                return -1;
             }
 
-            // Return a default value or handle the error case based on your application's requirements.
-            // For example, you could throw an exception here if the folder name doesn't contain a valid ticket ID.
+            const string RefCellPullRequestDescription = "D11";
+            var pullRequestDescription =  _spreadsheetHelper.GetCellValue(planoDeployPath, RefCellPullRequestDescription);
+
+            
+            if(pullRequestDescription == null )return -1;
+
+            Match match = Regex.Match(pullRequestDescription, @"(\d+) - (.+)");
+
+            if (!match.Success)
+            {
+                return -1;
+            }           
+
+            if (int.TryParse(match.Groups[1].Value, out int ticketId))
+            {
+                return ticketId;
+            }            
             return -1; // Change this to an appropriate default value or throw an exception.
         }
     }

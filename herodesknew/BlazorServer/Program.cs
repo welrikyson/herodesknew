@@ -4,6 +4,7 @@ using herodesknew.Application.Tickets.Queries.GetFilteredTickets;
 using herodesknew.BlazorServer.Configurations;
 using herodesknew.BlazorServer.Data;
 using herodesknew.Infrastructure.Data.Contexts;
+using herodesknew.Infrastructure.Data.Migrators.PullRequest;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -31,6 +32,9 @@ builder.Services.AddTransient<GetFilteredTicketsQueryHandler>();
 builder.Services.AddTransient<GetAttachmentQueryHandler>();
 builder.Services.AddTransient<GetPullRequestsQueryHandler>();
 builder.Services.AddDbContext<HerodesknewDbContext>();
+builder.Services.AddTransient<PullRequestDataMigrator>();
+
+
 //--------
 
 var app = builder.Build();

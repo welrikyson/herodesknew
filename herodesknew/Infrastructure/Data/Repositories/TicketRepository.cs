@@ -2,7 +2,9 @@
 using herodesknew.Domain.Entities;
 using herodesknew.Domain.Repositories;
 using herodesknew.Infrastructure.Contexts;
+using herodesknew.Infrastructure.Data.Contexts;
 using herodesknew.Infrastructure.Data.Mock;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace herodesknew.Infrastructure.Data.Repositories;
@@ -10,10 +12,12 @@ namespace herodesknew.Infrastructure.Data.Repositories;
 internal sealed class TicketRepository : ITicketRepository
 {
     private readonly HelpdeskContext _helpdeskContext;
+    private readonly HerodesknewDbContext _herodesknewDbContext;
 
-    public TicketRepository(HelpdeskContext helpdeskContext)
+    public TicketRepository(HelpdeskContext helpdeskContext, HerodesknewDbContext herodesknewDbContext)
     {
         _helpdeskContext = helpdeskContext;
+        _herodesknewDbContext = herodesknewDbContext;
     }
 
     public async Task<(List<Ticket>, int)> GetFilteredTicketsAsync(int idSupportAgent, List<Filter>? filter, int skip, int take)
@@ -56,31 +60,55 @@ internal sealed class TicketRepository : ITicketRepository
 
         var ticketQueryDatas = await connection.QueryAsync<TicketQueryData>(
             sql,
-            new { idSupportAgent, skip,take, status = filterStatus?.Value }
+            new { idSupportAgent, skip, take, status = filterStatus?.Value }
         );
 
-        var tickets = ticketQueryDatas
-            .GroupBy(p => p.ProblemID)
-            .Select(g => new Ticket
+        var ticketIds = ticketQueryDatas.Select(t => t.ProblemID).Distinct().ToHashSet();
+
+        // Fetch PullRequests data for all relevant tickets.
+        var pullRequestsData = await _herodesknewDbContext.PullRequests
+            .Where(p => ticketIds.Contains(p.TicketId))
+            .ToListAsync();
+
+        // Organize PullRequests data into a dictionary for efficient retrieval.
+        var pullRequestsDictionary = pullRequestsData
+            .GroupBy(p => p.TicketId)
+            .ToDictionary(g => g.Key, g => g.ToList());
+
+        var tickets = new List<Ticket>();
+
+        // Build the Ticket objects and include the corresponding PullRequests.
+        foreach (var ticketData in ticketQueryDatas)
+        {
+            var ticket = new Ticket
             {
-                Id = g.Key,
-                Description = g.First().ProblemDescription,
-                IdDepartment = g.First().DepartmentID,
-                SlaUsed = g.First().ProblemSLA,
-                Title = g.First().ProblemTitle,
-                UserEmail = g.First().ProblemEmail,
-                StartDate = g.First().ProblemStartDate,
-                CloseDate = g.First().ProblemCloseDate,
-                Status = g.First().ProblemStatus.ParseStatus(),
-                Attachments = g.Where(t => t.AttachmentID.HasValue)
-                              .Select(t => new Attachment
-                              {
-                                  Id = t.AttachmentID ?? 0,
-                                  FileName = t.AttachmentName ?? string.Empty,
-                                  FilePath = t.AttachmentPath ?? string.Empty,
-                                  TicketId = t.ProblemID
-                              }).ToList()
-            }).ToList();
+                Id = ticketData.ProblemID,
+                Description = ticketData.ProblemDescription,
+                IdDepartment = ticketData.DepartmentID,
+                SlaUsed = ticketData.ProblemSLA,
+                Title = ticketData.ProblemTitle,
+                UserEmail = ticketData.ProblemEmail,
+                StartDate = ticketData.ProblemStartDate,
+                CloseDate = ticketData.ProblemCloseDate,
+                Status = ticketData.ProblemStatus.ParseStatus(),
+                Attachments = ticketData.AttachmentID.HasValue
+                    ? new List<Attachment>
+                    {
+                    new Attachment
+                    {
+                        Id = ticketData.AttachmentID.Value,
+                        FileName = ticketData.AttachmentName ?? string.Empty,
+                        FilePath = ticketData.AttachmentPath ?? string.Empty,
+                        TicketId = ticketData.ProblemID
+                    }
+                    }
+                    : new List<Attachment>(),
+                PullRequests = pullRequestsDictionary.ContainsKey(ticketData.ProblemID)
+                    ? pullRequestsDictionary[ticketData.ProblemID]
+                    : new List<PullRequest>(),
+            };
+            tickets.Add(ticket);
+        }
 
         return (tickets, ticketQueryDatas?.FirstOrDefault()?.TotalCount ?? 0);
     }

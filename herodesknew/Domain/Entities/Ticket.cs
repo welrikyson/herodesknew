@@ -18,6 +18,6 @@ namespace herodesknew.Domain.Entities
         public DateTime? CloseDate { get; set; }
         public required StatusEnum Status { get; set; }
         public IEnumerable<Attachment>? Attachments { get; set; }
-        public IEnumerable<Solution>? Solutions { get; set; }
+        public IEnumerable<PullRequest>? PullRequests { get; set; }
     }
 }

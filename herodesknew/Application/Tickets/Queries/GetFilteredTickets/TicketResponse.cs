@@ -18,5 +18,5 @@ public sealed class TicketResponse
     public required DateTime? StartDate { get; set; }
     public required DateTime? CloseDate { get; set; }
     public IEnumerable<Attachment>? Attachments { get; set; }
-    public IEnumerable<Solution>? Solutions { get; set; }
+    public IEnumerable<PullRequest>? PullRequests { get; set; }
 }

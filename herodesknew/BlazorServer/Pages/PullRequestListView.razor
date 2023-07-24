@@ -15,7 +15,7 @@
 
 
 <h3>Pull Requests</h3>
-
+<RadzenLabel>@pullRequests?.Count()</RadzenLabel>
 <RadzenDataGrid TItem="PullRequestResponse" Data="@pullRequests" LoadData="@LoadData" Count="@totalCount" PageSize="10" IsLoading=@isLoading ShowPagingSummary ShowExpandColumn AllowPaging AllowSorting AllowColumnResize AllowFiltering>
     <Columns>
         <RadzenDataGridColumn TItem="PullRequestResponse" Property="Id" Title="Id" />
@@ -31,13 +31,6 @@
     void LoadData(LoadDataArgs args)
     {
         isLoading = true;
-        var filtes = args.Filters
-            .Select((dataGridFilter) => new Filter()
-                {
-                    Operator = dataGridFilter.FilterOperator.GetDisplayDescription(),
-                    Property = dataGridFilter.Property,
-                    Value = dataGridFilter.FilterValue.ToString() ?? string.Empty,
-                });
         var result = GetPullRequestsQueryHandler.Handle(new GetPullRequestQuery());
         if (result.IsSuccess)
         {

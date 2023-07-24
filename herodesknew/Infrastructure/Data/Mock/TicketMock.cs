@@ -21,7 +21,6 @@ namespace herodesknew.Infrastructure.Data.Mock
                     SlaUsed = (i * 3) % 24,
                     Status = i % 2 == 0 ? StatusEnum.OK : StatusEnum.EA,
                     Attachments = GenerateAttachmentsMock(i),
-                    Solutions = GenerateSolutionsMock(i)
                 };
 
                 tickets.Add(ticket);
@@ -48,25 +47,6 @@ namespace herodesknew.Infrastructure.Data.Mock
             }
 
             return attachments;
-        }
-
-        private static IEnumerable<Solution> GenerateSolutionsMock(int ticketId)
-        {
-            var solutions = new List<Solution>();
-
-            if (ticketId % 4 == 0)
-            {
-                var solution = new Solution
-                {
-                    IdTicket = ticketId,
-                    Id = 1,
-                    PullRequestUrl = $"https://github.com/user/ticket{ticketId}/pull/1"
-                };
-
-                solutions.Add(solution);
-            }
-
-            return solutions;
         }
     }
 }
