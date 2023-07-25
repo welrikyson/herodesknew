@@ -1,8 +1,10 @@
 using herodesknew.Application.Attachments.Queries.GetAttachment;
+using herodesknew.Application.PullRequests.Commands.CreatePullRequest;
 using herodesknew.Application.PullRequests.Queries.GetPullRequests;
 using herodesknew.Application.Tickets.Queries.GetFilteredTickets;
 using herodesknew.BlazorServer.Configurations;
 using herodesknew.BlazorServer.Data;
+using herodesknew.Domain.AppSettingEntities;
 using herodesknew.Infrastructure.Data.Contexts;
 using herodesknew.Infrastructure.Data.Migrators.PullRequest;
 using Microsoft.AspNetCore.Authentication.Negotiate;
@@ -31,9 +33,13 @@ builder.Services.InfrastructureServiceInstall(builder.Configuration);
 builder.Services.AddTransient<GetFilteredTicketsQueryHandler>();
 builder.Services.AddTransient<GetAttachmentQueryHandler>();
 builder.Services.AddTransient<GetPullRequestsQueryHandler>();
+builder.Services.AddTransient<CreatePullRequestCommandHandler>();
+
 builder.Services.AddDbContext<HerodesknewDbContext>();
 builder.Services.AddTransient<PullRequestDataMigrator>();
 
+var azureReposSettings = builder.Configuration.GetSection("AzureReposSettings").Get<AzureReposSettings>()!;
+builder.Services.AddSingleton(azureReposSettings);
 
 //--------
 
