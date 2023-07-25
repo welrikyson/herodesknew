@@ -1,6 +1,6 @@
-﻿using Gatherly.Domain.Shared;
-using herodesknew.Domain.Erros;
+﻿using herodesknew.Domain.Erros;
 using herodesknew.Domain.Repositories;
+using herodesknew.Shared;
 using System.Net.Mime;
 
 namespace herodesknew.Application.Attachments.Queries.GetAttachment;

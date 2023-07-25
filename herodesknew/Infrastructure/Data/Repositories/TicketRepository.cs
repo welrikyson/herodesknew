@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using herodesknew.Domain.Entities;
 using herodesknew.Domain.Repositories;
-using herodesknew.Infrastructure.Contexts;
 using herodesknew.Infrastructure.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 

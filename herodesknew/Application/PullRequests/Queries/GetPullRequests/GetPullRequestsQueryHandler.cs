@@ -1,5 +1,5 @@
-﻿using Gatherly.Domain.Shared;
-using herodesknew.Domain.Repositories;
+﻿using herodesknew.Domain.Repositories;
+using herodesknew.Shared;
 
 namespace herodesknew.Application.PullRequests.Queries.GetPullRequests
 {

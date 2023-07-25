@@ -1,6 +1,6 @@
 ﻿using herodesknew.Domain.Entities;
 
-namespace herodesknew.Application.Tickets.Queries.GetTickets;
+namespace herodesknew.Application.Tickets.Queries.GetFilteredTickets;
 
 public sealed class TicketResponse
 {

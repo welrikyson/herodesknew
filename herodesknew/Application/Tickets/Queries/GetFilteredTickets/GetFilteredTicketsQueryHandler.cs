@@ -1,7 +1,6 @@
-﻿using Gatherly.Domain.Shared;
-using herodesknew.Application.Tickets.Queries.GetTickets;
-using herodesknew.Domain.Erros;
+﻿using herodesknew.Domain.Erros;
 using herodesknew.Domain.Repositories;
+using herodesknew.Shared;
 
 namespace herodesknew.Application.Tickets.Queries.GetFilteredTickets;
 

@@ -1,4 +1,4 @@
-﻿using herodesknew.Infrastructure.Contexts;
+﻿using herodesknew.Infrastructure.Data.Contexts;
 using Scrutor;
 
 namespace herodesknew.BlazorServer.Configurations

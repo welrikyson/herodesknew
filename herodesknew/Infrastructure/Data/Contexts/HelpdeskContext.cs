@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using System.Data;
 
-namespace herodesknew.Infrastructure.Contexts
+namespace herodesknew.Infrastructure.Data.Contexts
 {
     public class HelpdeskContext
     {

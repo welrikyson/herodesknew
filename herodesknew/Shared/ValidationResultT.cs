@@ -1,6 +1,4 @@
-﻿using herodesknew.Shared;
-
-namespace Gatherly.Domain.Shared
+﻿namespace herodesknew.Shared
 {
     public sealed class ValidationResult<TValue> : Result<TValue>, IValidationResult
     {

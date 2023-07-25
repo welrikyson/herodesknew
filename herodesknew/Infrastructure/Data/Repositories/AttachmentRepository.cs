@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using herodesknew.Domain.Entities;
 using herodesknew.Domain.Repositories;
-using herodesknew.Infrastructure.Contexts;
+using herodesknew.Infrastructure.Data.Contexts;
 
 namespace herodesknew.Infrastructure.Data.Repositories
 {
