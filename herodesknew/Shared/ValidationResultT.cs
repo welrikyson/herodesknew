@@ -2,7 +2,7 @@
 
 namespace Gatherly.Domain.Shared
 {
-    public sealed class ValidationResult<TValue>: Result<TValue>, IValidationResult
+    public sealed class ValidationResult<TValue> : Result<TValue>, IValidationResult
     {
         private ValidationResult(Error[] errors)
             : base(default, false, IValidationResult.ValidationError) =>

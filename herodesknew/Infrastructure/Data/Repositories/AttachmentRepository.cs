@@ -2,12 +2,6 @@
 using herodesknew.Domain.Entities;
 using herodesknew.Domain.Repositories;
 using herodesknew.Infrastructure.Contexts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static herodesknew.Infrastructure.Data.Repositories.TicketRepository;
 
 namespace herodesknew.Infrastructure.Data.Repositories
 {
@@ -37,7 +31,7 @@ namespace herodesknew.Infrastructure.Data.Repositories
                 """;
             var attachment = await connection.QuerySingleOrDefaultAsync<Attachment>(
                 sql,
-                new { attachmentID}
+                new { attachmentID }
                 );
             return attachment;
         }

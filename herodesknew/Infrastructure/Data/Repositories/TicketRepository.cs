@@ -3,9 +3,7 @@ using herodesknew.Domain.Entities;
 using herodesknew.Domain.Repositories;
 using herodesknew.Infrastructure.Contexts;
 using herodesknew.Infrastructure.Data.Contexts;
-using herodesknew.Infrastructure.Data.Mock;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
 
 namespace herodesknew.Infrastructure.Data.Repositories;
 
@@ -21,11 +19,11 @@ internal sealed class TicketRepository : ITicketRepository
     }
 
     public async Task<(List<Ticket>, int)> GetFilteredTicketsAsync(int idSupportAgent, List<Filter>? filter, int skip, int take)
-    {   
+    {
         using var connection = _helpdeskContext.CreateDbConnection();
-        var filterStatus = 
+        var filterStatus =
             filter?
-                .Where(f => f.Property == nameof(Ticket.Status) && 
+                .Where(f => f.Property == nameof(Ticket.Status) &&
                             Enum.TryParse<StatusEnum>(f.Value, out var _))
                 .Select((f) => (Value: Enum.GetName(Enum.Parse<StatusEnum>(f.Value)), Condition: "AND Status = @status"))
                 .SingleOrDefault();

@@ -1,13 +1,7 @@
 ﻿using Gatherly.Domain.Shared;
-using herodesknew.Domain.Entities;
 using herodesknew.Domain.Erros;
 using herodesknew.Domain.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Mime;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace herodesknew.Application.Attachments.Queries.GetAttachment;
 
@@ -28,7 +22,7 @@ public sealed class GetAttachmentQueryHandler
         }
 
         var attachment = await _attachmentRepository.GetAttachmentBy(getAttachmentQuery.AttachmentId);
-        
+
         if (attachment == null)
         {
             return Result.Failure<AttachmentResponse>(DomainErrors.Attachment.NotFound(getAttachmentQuery.AttachmentId));
@@ -52,7 +46,7 @@ public sealed class GetAttachmentQueryHandler
         };
 
         FileStream fileStream = new FileStream(anexoFilePath, FileMode.Open, FileAccess.Read);
-        
-        return Result.Success(new AttachmentResponse() { ContentType = contentType, FileStream = fileStream , FileName = attachment.FileName} );
+
+        return Result.Success(new AttachmentResponse() { ContentType = contentType, FileStream = fileStream, FileName = attachment.FileName });
     }
 }

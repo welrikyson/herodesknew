@@ -1,5 +1,4 @@
-﻿using System;
-using herodesknew.Domain.Entities;
+﻿using herodesknew.Domain.Entities;
 
 namespace herodesknew.Infrastructure.Data.Mock
 {

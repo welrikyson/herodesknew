@@ -1,10 +1,5 @@
 ﻿using herodesknew.Domain.Repositories;
 using herodesknew.Infrastructure.Data.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace herodesknew.Infrastructure.Data.Migrators.PullRequest;
 
@@ -13,7 +8,7 @@ public sealed class PullRequestDataMigrator
     private readonly IPullRequestRepository _pullRequestRepository;
     private readonly IPullRequestFetcher _pullRequestFetcher;
 
-    public PullRequestDataMigrator(IPullRequestRepository pullRequestRepository, IPullRequestFetcher pullRequestFetcher) 
+    public PullRequestDataMigrator(IPullRequestRepository pullRequestRepository, IPullRequestFetcher pullRequestFetcher)
     {
         _pullRequestRepository = pullRequestRepository;
         _pullRequestFetcher = pullRequestFetcher;
@@ -33,7 +28,7 @@ public sealed class PullRequestDataMigrator
             Console.WriteLine("Erro ao migrar os pull requests: " + ex.Message);
         }
     }
-    
+
 
     private void MigrateToDatabase(List<Domain.Entities.PullRequest> pullRequests)
     {

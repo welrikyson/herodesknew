@@ -1,11 +1,5 @@
 ﻿using Gatherly.Domain.Shared;
-using herodesknew.Domain.Erros;
 using herodesknew.Domain.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace herodesknew.Application.PullRequests.Queries.GetPullRequests
 {
@@ -21,9 +15,9 @@ namespace herodesknew.Application.PullRequests.Queries.GetPullRequests
         public Result<List<PullRequestResponse>?> Handle(GetPullRequestQuery getPullRequestQuery)
         {
             var pullRequests = _pullRequestRepository.GetPullRequests();
-            var pullRequestResponseList = pullRequests?.Select((pullRequest) =>new PullRequestResponse() { Id = pullRequest.Id, TicketId = pullRequest.TicketId}).ToList();
+            var pullRequestResponseList = pullRequests?.Select((pullRequest) => new PullRequestResponse() { Id = pullRequest.Id, TicketId = pullRequest.TicketId }).ToList();
 
-            return Result.Success(pullRequestResponseList); 
+            return Result.Success(pullRequestResponseList);
         }
     }
 }

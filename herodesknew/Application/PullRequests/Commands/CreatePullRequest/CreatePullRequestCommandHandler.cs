@@ -5,11 +5,6 @@ using Microsoft.TeamFoundation.SourceControl.WebApi;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.WebApi;
 using NUlid;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace herodesknew.Application.PullRequests.Commands.CreatePullRequest
 {
@@ -18,7 +13,8 @@ namespace herodesknew.Application.PullRequests.Commands.CreatePullRequest
         private readonly AzureReposSettings _azureRepos;
         private readonly IPullRequestRepository _pullRequestRepository;
 
-        public CreatePullRequestCommandHandler(AzureReposSettings azureRepos, IPullRequestRepository pullRequestRepository)
+        public CreatePullRequestCommandHandler(AzureReposSettings azureRepos,
+                                               IPullRequestRepository pullRequestRepository)
         {
             _azureRepos = azureRepos;
             _pullRequestRepository = pullRequestRepository;
@@ -52,7 +48,7 @@ namespace herodesknew.Application.PullRequests.Commands.CreatePullRequest
 
             var pullRequestResponse = new PullRequest()
             {
-                Id =  pullRequest.CodeReviewId,
+                Id = pullRequest.CodeReviewId,
                 TicketId = 0
             };
             _pullRequestRepository.AddPullRequest(pullRequestResponse);
@@ -61,17 +57,23 @@ namespace herodesknew.Application.PullRequests.Commands.CreatePullRequest
 
         private GitHttpClient GetGitClient()
         {
-            VssConnection connection = new (new Uri(_azureRepos.UrlBase), new VssBasicCredential(string.Empty, _azureRepos.Token));
+            VssConnection connection = new(new Uri(_azureRepos.UrlBase), new VssBasicCredential(string.Empty, _azureRepos.Token));
             return connection.GetClient<GitHttpClient>();
         }
 
-        private GitRef GetSourceBranchRef(GitHttpClient gitClient, GitRepository repo, string targetBranch)
+        private GitRef GetSourceBranchRef(GitHttpClient gitClient,
+                                          GitRepository repo,
+                                          string targetBranch)
         {
             var refs = gitClient.GetRefsAsync(project: _azureRepos.ProjName, repositoryId: repo.Id).Result;
             return refs.First(r => r.Name == targetBranch);
         }
 
-        private GitPush CreateGitPush(string sourceBranch, string objectId, string commitComment, string commitItemPath, string commitContent)
+        private GitPush CreateGitPush(string sourceBranch,
+                                      string objectId,
+                                      string commitComment,
+                                      string commitItemPath,
+                                      string commitContent)
         {
             return new GitPush
             {
@@ -102,7 +104,10 @@ namespace herodesknew.Application.PullRequests.Commands.CreatePullRequest
             };
         }
 
-        private GitPullRequest CreateGitPullRequest(string sourceBranch, string targetBranch, string pullRequestTitle, string pullRequestDescription)
+        private GitPullRequest CreateGitPullRequest(string sourceBranch,
+                                                    string targetBranch,
+                                                    string pullRequestTitle,
+                                                    string pullRequestDescription)
         {
             return new GitPullRequest
             {
@@ -113,7 +118,10 @@ namespace herodesknew.Application.PullRequests.Commands.CreatePullRequest
             };
         }
 
-        private async Task UpdatePullRequest(GitHttpClient gitClient, GitPush push, Guid repositoryId, int pullRequestId)
+        private async Task UpdatePullRequest(GitHttpClient gitClient,
+                                             GitPush push,
+                                             Guid repositoryId,
+                                             int pullRequestId)
         {
             await gitClient.UpdatePullRequestAsync(new GitPullRequest()
             {

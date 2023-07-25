@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace herodesknew.Application.PullRequests.Commands.CreatePullRequest
+﻿namespace herodesknew.Application.PullRequests.Commands.CreatePullRequest
 {
     public sealed class CreatePullRequestCommand
     {

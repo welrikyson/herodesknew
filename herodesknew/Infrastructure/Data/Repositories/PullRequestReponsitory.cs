@@ -3,12 +3,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using herodesknew.Domain.Entities;
 using herodesknew.Domain.Repositories;
 using herodesknew.Infrastructure.Data.Contexts;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace herodesknew.Infrastructure.Data.Repositories
@@ -18,7 +13,7 @@ namespace herodesknew.Infrastructure.Data.Repositories
         private readonly HerodesknewDbContext _herodesknewDbContext;
 
         public PullRequestRepository(HerodesknewDbContext herodesknewDbContext)
-        {     
+        {
             _herodesknewDbContext = herodesknewDbContext;
         }
 
@@ -30,7 +25,7 @@ namespace herodesknew.Infrastructure.Data.Repositories
         public void AddPullRequests(List<PullRequest> pullRequests)
         {
             var existingPullRequestIds = _herodesknewDbContext.PullRequests.Select(t => t.Id).ToList();
-            var newPullRequests = pullRequests.Where(t => t.Id> 0 && !existingPullRequestIds.Contains(t.Id));
+            var newPullRequests = pullRequests.Where(t => t.Id > 0 && !existingPullRequestIds.Contains(t.Id));
 
             // Adiciona apenas os tickets que ainda não existem no banco de dados.
             _herodesknewDbContext.PullRequests.AddRange(newPullRequests);
@@ -100,22 +95,22 @@ namespace herodesknew.Infrastructure.Data.Repositories
             }
 
             const string RefCellPullRequestDescription = "D11";
-            var pullRequestDescription =  _spreadsheetHelper.GetCellValue(planoDeployPath, RefCellPullRequestDescription);
+            var pullRequestDescription = _spreadsheetHelper.GetCellValue(planoDeployPath, RefCellPullRequestDescription);
 
-            
-            if(pullRequestDescription == null )return -1;
+
+            if (pullRequestDescription == null) return -1;
 
             Match match = Regex.Match(pullRequestDescription, @"(\d+) - (.+)");
 
             if (!match.Success)
             {
                 return -1;
-            }           
+            }
 
             if (int.TryParse(match.Groups[1].Value, out int ticketId))
             {
                 return ticketId;
-            }            
+            }
             return -1; // Change this to an appropriate default value or throw an exception.
         }
     }

@@ -1,18 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using herodesknew.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using herodesknew.Domain.Entities;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace herodesknew.Infrastructure.Data.Configurations
 {
     internal sealed class PullRequestConfiguration : IEntityTypeConfiguration<PullRequest>
     {
         public void Configure(EntityTypeBuilder<PullRequest> builder)
-        {            
+        {
             builder.HasKey(x => x.Id);
         }
     }

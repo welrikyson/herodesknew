@@ -8,8 +8,6 @@ using herodesknew.Domain.AppSettingEntities;
 using herodesknew.Infrastructure.Data.Contexts;
 using herodesknew.Infrastructure.Data.Migrators.PullRequest;
 using Microsoft.AspNetCore.Authentication.Negotiate;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
