@@ -22,6 +22,11 @@ namespace herodesknew.Infrastructure.Data.Repositories
             _herodesknewDbContext = herodesknewDbContext;
         }
 
+        public void AddPullRequest(PullRequest pullRequest)
+        {
+            _herodesknewDbContext.PullRequests.Add(pullRequest);
+            _herodesknewDbContext.SaveChanges();
+        }
         public void AddPullRequests(List<PullRequest> pullRequests)
         {
             var existingPullRequestIds = _herodesknewDbContext.PullRequests.Select(t => t.Id).ToList();

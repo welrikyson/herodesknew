@@ -16,10 +16,12 @@ namespace herodesknew.Application.PullRequests.Commands.CreatePullRequest
     public sealed class CreatePullRequestCommandHandler
     {
         private readonly AzureReposSettings _azureRepos;
+        private readonly IPullRequestRepository _pullRequestRepository;
 
-        public CreatePullRequestCommandHandler(AzureReposSettings azureRepos)
+        public CreatePullRequestCommandHandler(AzureReposSettings azureRepos, IPullRequestRepository pullRequestRepository)
         {
             _azureRepos = azureRepos;
+            _pullRequestRepository = pullRequestRepository;
         }
 
         public async Task<int> Handle(CreatePullRequestCommand createPullRequestCommand)
@@ -48,6 +50,12 @@ namespace herodesknew.Application.PullRequests.Commands.CreatePullRequest
 
             await UpdatePullRequest(gitClient, push, repo.Id, pullRequest.PullRequestId);
 
+            var pullRequestResponse = new PullRequest()
+            {
+                Id =  pullRequest.CodeReviewId,
+                TicketId = 0
+            };
+            _pullRequestRepository.AddPullRequest(pullRequestResponse);
             return pullRequest.CodeReviewId;
         }
 
