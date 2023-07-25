@@ -53,8 +53,7 @@ namespace herodesknew.Application.PullRequests.Commands.CreatePullRequest
 
         private GitHttpClient GetGitClient()
         {
-            var credentials = new VssBasicCredential(string.Empty, _azureRepos.Token);
-            var connection = new VssConnection(new Uri(_azureRepos.UrlBase), credentials);
+            VssConnection connection = new (new Uri(_azureRepos.UrlBase), new VssBasicCredential(string.Empty, _azureRepos.Token));
             return connection.GetClient<GitHttpClient>();
         }
 
