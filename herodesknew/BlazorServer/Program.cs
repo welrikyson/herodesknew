@@ -26,6 +26,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 
 builder.Services.InfrastructureServiceInstall(builder.Configuration);
+builder.Services.UtilsServiceInstall(builder.Configuration);
 
 //TODO: Refactory service install 
 builder.Services.AddTransient<GetFilteredTicketsQueryHandler>();
