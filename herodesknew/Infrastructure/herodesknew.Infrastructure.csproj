@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Domain\herodesknew.Domain.csproj" />
+    <ProjectReference Include="..\herodesknew.Application.Local\herodesknew.Application.Local.csproj" />
   </ItemGroup>
 
   <ItemGroup>

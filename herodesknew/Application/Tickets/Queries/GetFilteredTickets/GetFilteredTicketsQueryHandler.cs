@@ -41,6 +41,7 @@ public sealed class GetFilteredTicketsQueryHandler
                 CloseDate = ticket.CloseDate,
                 StartDate = ticket.StartDate,
                 Status = ticket.Status,
+                SqlFiles = ticket.SqlFiles
             };
     }
 }

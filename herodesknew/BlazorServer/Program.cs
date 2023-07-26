@@ -1,12 +1,15 @@
 using herodesknew.Application.Attachments.Queries.GetAttachment;
+using herodesknew.Application.Local;
 using herodesknew.Application.PullRequests.Commands.CreatePullRequest;
 using herodesknew.Application.PullRequests.Queries.GetPullRequests;
 using herodesknew.Application.Tickets.Queries.GetFilteredTickets;
 using herodesknew.BlazorServer.Configurations;
 using herodesknew.BlazorServer.Data;
 using herodesknew.Domain.AppSettingEntities;
+using herodesknew.Domain.Repositories;
 using herodesknew.Infrastructure.Data.Contexts;
 using herodesknew.Infrastructure.Data.Migrators.PullRequest;
+using herodesknew.Infrastructure.Data.Repositories;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +28,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 
+
 builder.Services.InfrastructureServiceInstall(builder.Configuration);
 builder.Services.UtilsServiceInstall(builder.Configuration);
 
@@ -33,9 +37,11 @@ builder.Services.AddTransient<GetFilteredTicketsQueryHandler>();
 builder.Services.AddTransient<GetAttachmentQueryHandler>();
 builder.Services.AddTransient<GetPullRequestsQueryHandler>();
 builder.Services.AddTransient<CreatePullRequestCommandHandler>();
+builder.Services.AddTransient<SqlExecutionPlanDoc>();
 
 builder.Services.AddDbContext<HerodesknewDbContext>();
 builder.Services.AddTransient<PullRequestDataMigrator>();
+builder.Services.AddTransient<ISqlFileRepository, LocalSqlFileRepository>();
 
 var azureReposSettings = builder.Configuration.GetSection("AzureReposSettings").Get<AzureReposSettings>()!;
 builder.Services.AddSingleton(azureReposSettings);

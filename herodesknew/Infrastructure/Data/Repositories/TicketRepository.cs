@@ -10,11 +10,12 @@ internal sealed class TicketRepository : ITicketRepository
 {
     private readonly HelpdeskContext _helpdeskContext;
     private readonly HerodesknewDbContext _herodesknewDbContext;
-
-    public TicketRepository(HelpdeskContext helpdeskContext, HerodesknewDbContext herodesknewDbContext)
+    private readonly ISqlFileRepository _sqlFileRepository;
+    public TicketRepository(HelpdeskContext helpdeskContext, HerodesknewDbContext herodesknewDbContext, ISqlFileRepository sqlFileRepository)
     {
         _helpdeskContext = helpdeskContext;
         _herodesknewDbContext = herodesknewDbContext;
+        _sqlFileRepository = sqlFileRepository;
     }
 
     public async Task<(List<Ticket>, int)> GetFilteredTicketsAsync(int idSupportAgent, List<Filter>? filter, int skip, int take)
@@ -103,6 +104,7 @@ internal sealed class TicketRepository : ITicketRepository
                 PullRequests = pullRequestsDictionary.ContainsKey(ticketData.ProblemID)
                     ? pullRequestsDictionary[ticketData.ProblemID]
                     : new List<PullRequest>(),
+                SqlFiles = _sqlFileRepository.GetSqlFiles(ticketData.ProblemID),
             };
             tickets.Add(ticket);
         }

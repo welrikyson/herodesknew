@@ -3,6 +3,7 @@
 @using System.Collections.Generic
 @using Radzen;
 @using Radzen.Blazor;
+@using herodesknew.Application.Local;
 @using herodesknew.Application.Tickets.Queries.GetFilteredTickets;
 @using herodesknew.Domain.Entities;
 @using herodesknew.Domain.Repositories;
@@ -53,6 +54,25 @@
                         }
                     </ul>
 
+                </RadzenText>
+            }
+            @if (ticket?.SqlFiles != null && ticket.SqlFiles.Count() > 0)
+            {
+                <RadzenText class="rz-text-wrap" TextStyle="TextStyle.Body1" TextAlign="TextAlign.Left">
+                    <strong>SQL Files</strong><br />
+                    <ul>
+                        @foreach (var sqlFile in ticket.SqlFiles)
+                        {
+                            <li> 
+                                <RadzenLabel Text=@(Path.GetFileName(sqlFile.sqlFileName))></RadzenLabel>
+                                <RadzenButton Variant="Variant.Text" Size="ButtonSize.ExtraSmall" Click=@(args => FileOpener.Open(sqlFile.sqlFileName)) ButtonStyle="ButtonStyle.Secondary" Text="Open" />
+                                @if(sqlFile.pullRequestId == null)
+                                {
+                                    <RadzenButton Variant = "Variant.Text" Size = "ButtonSize.ExtraSmall" Click =@(args => FileOpener.Open(sqlFile.sqlFileName)) ButtonStyle = "ButtonStyle.Secondary" Text = "Send" />
+                                }                           
+                            </li>
+                        }
+                    </ul>
                 </RadzenText>
             }
         </div>

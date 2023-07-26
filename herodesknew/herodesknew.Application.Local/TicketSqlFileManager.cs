@@ -78,11 +78,37 @@ public class SqlExecutionPlanDoc
 
     private readonly ISpreadsheetHelper _speadsheetHelper;
     private readonly string _planoDeployfilePath;
+    private readonly IUrlParser _urlParser;
 
-    public SqlExecutionPlanDoc(ISpreadsheetHelper speadsheetHelper)
+    public SqlExecutionPlanDoc(ISpreadsheetHelper speadsheetHelper, IUrlParser urlParser)
     {
         _planoDeployfilePath = Path.Combine(Environment.CurrentDirectory, _fileName);
         _speadsheetHelper = speadsheetHelper;
+        _urlParser = urlParser;
+    }
+
+    public int? GetPullRequestId(string path)
+    {
+        var fileFullName = Path.Combine(path, _fileName);
+
+        if (!File.Exists(fileFullName))
+        {
+            return null;
+
+        }
+        var pullRequestUrl = _speadsheetHelper.GetCellValue(fileFullName, RefCellPullRequestUrl);
+
+        if (string.IsNullOrEmpty(pullRequestUrl))
+        {
+            return null;
+        }
+
+        if(!_urlParser.TryGetPullRequestNumberFromUrl(pullRequestUrl, out var pullRequestId))
+        {
+            return null;
+        }
+
+        return pullRequestId;
     }
     public void CreateDeployDocAsync(string pastaDestino, string title, string pullRequestUrl)
     {            

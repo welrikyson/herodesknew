@@ -13,5 +13,6 @@
         public required StatusEnum Status { get; set; }
         public IEnumerable<Attachment>? Attachments { get; set; }
         public IEnumerable<PullRequest>? PullRequests { get; set; }
+        public IEnumerable<(string sqlFileName, int? pullRequestId)>? SqlFiles { get; set; }
     }
 }
