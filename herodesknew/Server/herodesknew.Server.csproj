@@ -15,7 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Application\herodesknew.Application.csproj" />
     <ProjectReference Include="..\Infrastructure\herodesknew.Infrastructure.csproj" />
-    <ProjectReference Include="..\Utils\herodesknew.Utils.csproj" />
+    <ProjectReference Include="..\Local.Infrastructure\herodesknew.Local.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

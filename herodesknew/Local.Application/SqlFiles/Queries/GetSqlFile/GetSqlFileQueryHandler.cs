@@ -1,4 +1,5 @@
 ﻿using herodesknew.Domain.Entities;
+using herodesknew.Local.Domain.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace herodesknew.Local.Application.SqlFiles.Queries.GetSqlFile
             _sqlExecutionPlaDoc = sqlExecutionPlaDoc;
         }
 
-        IEnumerable<(string, int?)> Handle(int ticketId)
+        public IEnumerable<(string, int?)> Handle(int ticketId)
         {
             var ticketFolder = FolderSearcher.FindFolderInDirectory(ticketId.ToString(), _rootTicketFolderPath);
             if (string.IsNullOrEmpty(ticketFolder))

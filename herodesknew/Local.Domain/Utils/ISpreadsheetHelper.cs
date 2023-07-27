@@ -1,6 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Spreadsheet;
 
-namespace herodesknew.Domain.Utils
+namespace herodesknew.Local.Domain.Utils
 {
     public interface ISpreadsheetHelper
     {

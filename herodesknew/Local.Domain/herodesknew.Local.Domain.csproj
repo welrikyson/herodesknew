@@ -10,9 +10,4 @@
     <PackageReference Include="DocumentFormat.OpenXml" Version="2.20.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Domain\herodesknew.Domain.csproj" />
-    <ProjectReference Include="..\Local.Domain\herodesknew.Local.Domain.csproj" />
-  </ItemGroup>
-
 </Project>

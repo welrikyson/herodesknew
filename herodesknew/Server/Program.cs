@@ -6,9 +6,9 @@ using herodesknew.Application.Tickets.Queries.GetFilteredTickets;
 using herodesknew.Domain.AppSettingEntities;
 using herodesknew.Domain.Repositories;
 using herodesknew.Infrastructure.Data.Contexts;
-using herodesknew.Infrastructure.Data.Migrators.PullRequest;
 using herodesknew.Infrastructure.Data.Repositories;
-using herodesknew.Local.Application;
+using herodesknew.Local.Application.SqlFiles.Queries.GetSqlFile;
+using herodesknew.Local.Domain.Utils;
 using Scrutor;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,7 +25,7 @@ builder.Services
         selector => selector
             .FromAssemblies(
                 herodesknew.Infrastructure.AssemblyReference.Assembly,
-                herodesknew.Utils.AssemblyReference.Assembly)
+                 herodesknew.Local.Domain.AssemblyReference.Assembly)
             .AddClasses(false)
             .UsingRegistrationStrategy(RegistrationStrategy.Skip)
             .AsMatchingInterface()
@@ -40,7 +40,6 @@ builder.Services.AddTransient<CreatePullRequestCommandHandler>();
 builder.Services.AddTransient<SqlExecutionPlanDoc>();
 
 builder.Services.AddDbContext<HerodesknewDbContext>();
-builder.Services.AddTransient<PullRequestDataMigrator>();
 builder.Services.AddTransient<ISqlFileRepository, LocalSqlFileRepository>();
 builder.Services.AddTransient<HelpdeskContext>();
 
@@ -58,6 +57,7 @@ builder.Services.AddCors(options =>
         });
 });
 
+builder.Services.AddTransient<GetSqlFileQueryHandler>();
 #endregion
 
 
