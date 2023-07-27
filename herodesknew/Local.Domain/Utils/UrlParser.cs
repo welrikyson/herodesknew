@@ -5,9 +5,8 @@ namespace herodesknew.Local.Domain.Utils;
 public class UrlParser : IUrlParser
 {
     public bool TryGetPullRequestNumberFromUrl(string url, out int pullRequestNumber)
-    {
-        const string pattern = @"/pullrequest/(\d+)";
-        var match = Regex.Match(url, pattern);
+    {   
+        var match = Regex.Match(url, @"/pullrequest/(\d+)");
 
         if (!match.Success || !int.TryParse(match.Groups[1].Value, out pullRequestNumber))
         {

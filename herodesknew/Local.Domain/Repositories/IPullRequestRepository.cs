@@ -9,6 +9,6 @@ namespace herodesknew.Local.Domain.Repositories
 {
     public interface IPullRequestRepository
     {
-        IEnumerable<PullRequest> GetPullRequests();
+        IEnumerable<PullRequest> GetPullRequests(int ticketId);
     }
 }
