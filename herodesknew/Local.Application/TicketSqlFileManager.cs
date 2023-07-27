@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace herodesknew.Application.Local;
+namespace herodesknew.Local.Application;
 
 
 public class FileOpener
@@ -24,8 +24,8 @@ public class FileReader
 {
     public static string? ReadFirstLineFromFile(string filePath)
     {
-        using FileStream fileStream = new (filePath, FileMode.Open, FileAccess.Read);
-        using StreamReader streamReader = new (fileStream);
+        using FileStream fileStream = new(filePath, FileMode.Open, FileAccess.Read);
+        using StreamReader streamReader = new(fileStream);
 
         // Lê a primeira linha do arquivo
         string? firstLine = streamReader.ReadLine();
@@ -103,7 +103,7 @@ public class SqlExecutionPlanDoc
             return null;
         }
 
-        if(!_urlParser.TryGetPullRequestNumberFromUrl(pullRequestUrl, out var pullRequestId))
+        if (!_urlParser.TryGetPullRequestNumberFromUrl(pullRequestUrl, out var pullRequestId))
         {
             return null;
         }
@@ -111,7 +111,7 @@ public class SqlExecutionPlanDoc
         return pullRequestId;
     }
     public void CreateDeployDocAsync(string pastaDestino, string title, string pullRequestUrl)
-    {            
+    {
         string caminhoDestino = Path.Combine(pastaDestino, _fileName);
 
         if (File.Exists(caminhoDestino))
@@ -122,7 +122,7 @@ public class SqlExecutionPlanDoc
 
         File.Copy(_planoDeployfilePath, caminhoDestino);
 
-        FillPlanoDeploySheet(pullRequestUrl, title, caminhoDestino);            
+        FillPlanoDeploySheet(pullRequestUrl, title, caminhoDestino);
     }
 
     public void FillPlanoDeploySheet(string valueCellPullRequestUrl, string valueCellmotivo, string caminhoDestino)
@@ -136,29 +136,6 @@ public class SqlExecutionPlanDoc
         _speadsheetHelper.UpdateCellValue(cells, refCellMotivo, valueCellmotivo);
 
         worksheetPart?.Worksheet.Save(); // save changes to the worksheet      
-    }
-}
-
-public class TicketSqlFolderManager
-{
-    private readonly string _rootTicketFolderPath;
-
-    public TicketSqlFolderManager(string rootTicketFolderPath)
-    {
-        _rootTicketFolderPath = rootTicketFolderPath;
-    }
-
-    public string GetOrCreateTicketSqlFolder(int ticketId)
-    {
-        string ticketSqlFolder = FolderSearcher.FindFolderInDirectory(_rootTicketFolderPath, $"{ticketId}");
-        //TODO: validar se a folder tem o formato /../../ANO/MES/TICKETID/SLT
-        if(ticketSqlFolder != null)
-        {
-            return ticketSqlFolder;
-        }
-            
-        var dirInfo = Directory.CreateDirectory(Path.Combine(_rootTicketFolderPath, @$"{DateTime.Now:yyyy\\MM}", ticketId.ToString(), "SLT"));
-        return dirInfo.FullName;
     }
 }
 

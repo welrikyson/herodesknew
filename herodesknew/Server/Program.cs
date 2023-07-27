@@ -1,5 +1,5 @@
+using DocumentFormat.OpenXml.Drawing;
 using herodesknew.Application.Attachments.Queries.GetAttachment;
-using herodesknew.Application.Local;
 using herodesknew.Application.PullRequests.Commands.CreatePullRequest;
 using herodesknew.Application.PullRequests.Queries.GetPullRequests;
 using herodesknew.Application.Tickets.Queries.GetFilteredTickets;
@@ -8,7 +8,8 @@ using herodesknew.Domain.Repositories;
 using herodesknew.Infrastructure.Data.Contexts;
 using herodesknew.Infrastructure.Data.Migrators.PullRequest;
 using herodesknew.Infrastructure.Data.Repositories;
-using herodesknew.Server.Configurations;
+using herodesknew.Local.Application;
+using Scrutor;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,9 +20,18 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.InfrastructureServiceInstall(builder.Configuration);
-builder.Services.UtilsServiceInstall(builder.Configuration);
+builder.Services
+    .Scan(
+        selector => selector
+            .FromAssemblies(
+                herodesknew.Infrastructure.AssemblyReference.Assembly,
+                herodesknew.Utils.AssemblyReference.Assembly)
+            .AddClasses(false)
+            .UsingRegistrationStrategy(RegistrationStrategy.Skip)
+            .AsMatchingInterface()
+            .WithScopedLifetime());
 
+#region services install
 //TODO: Refactory service install 
 builder.Services.AddTransient<GetFilteredTicketsQueryHandler>();
 builder.Services.AddTransient<GetAttachmentQueryHandler>();
@@ -32,11 +42,10 @@ builder.Services.AddTransient<SqlExecutionPlanDoc>();
 builder.Services.AddDbContext<HerodesknewDbContext>();
 builder.Services.AddTransient<PullRequestDataMigrator>();
 builder.Services.AddTransient<ISqlFileRepository, LocalSqlFileRepository>();
+builder.Services.AddTransient<HelpdeskContext>();
 
 var azureReposSettings = builder.Configuration.GetSection("AzureReposSettings").Get<AzureReposSettings>()!;
 builder.Services.AddSingleton(azureReposSettings);
-
-//--------
 
 builder.Services.AddCors(options =>
 {
@@ -49,9 +58,10 @@ builder.Services.AddCors(options =>
         });
 });
 
-var app = builder.Build();
-app.UseCors();
+#endregion
 
+
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -59,6 +69,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors();
 
 app.UseHttpsRedirection();
 

@@ -15,12 +15,14 @@ public sealed class GetFilteredTicketsQueryHandler
 
     public async Task<Result<(List<TicketResponse> ticketResponses, int totalCount)>> Handle(GetFilteredTicketsQuery getTicketsQuery)
     {
-        (var tickets, var totalCount) = await _ticketRepository.GetFilteredTicketsAsync(getTicketsQuery.IdSupportAgent, getTicketsQuery.Filters, getTicketsQuery.Skip, getTicketsQuery.Take);
+        (var tickets, var totalCount) = await _ticketRepository.GetFilteredTicketsAsync(getTicketsQuery.IdSupportAgent,
+                                                                                        getTicketsQuery.Filters,
+                                                                                        getTicketsQuery.Skip,
+                                                                                        getTicketsQuery.Take);
 
         if (tickets.Count == 0)
         {
-            return Result.Failure<(List<TicketResponse>, int totalCount)>(
-                      DomainErrors.Member.NotExist);
+            return Result.Failure<(List<TicketResponse>, int totalCount)>(DomainErrors.Member.NotExist);
         }
 
         List<TicketResponse> ticketReponseList = tickets.Select(MapTicketToTicketResponse).ToList();
