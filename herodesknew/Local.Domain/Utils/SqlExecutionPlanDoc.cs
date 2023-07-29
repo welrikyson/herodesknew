@@ -7,7 +7,7 @@ public class SqlExecutionPlanDoc
 {
     public static readonly string RefCellPullRequestUrl = "D44";
     public static readonly string refCellMotivo = "D11";
-    public static readonly string _fileName = "SIST 030 - 01 - Plano de Deploy.xlsx";
+    public static readonly string FileName = "SIST 030 - 01 - Plano de Deploy.xlsx";
 
     private readonly ISpreadsheetHelper _speadsheetHelper;
     private readonly string _planoDeployfilePath;
@@ -15,14 +15,14 @@ public class SqlExecutionPlanDoc
 
     public SqlExecutionPlanDoc(ISpreadsheetHelper speadsheetHelper, IUrlParser urlParser)
     {
-        _planoDeployfilePath = Path.Combine(Environment.CurrentDirectory, _fileName);
+        _planoDeployfilePath = Path.Combine(Environment.CurrentDirectory, FileName);
         _speadsheetHelper = speadsheetHelper;
         _urlParser = urlParser;
     }
 
     public int? GetPullRequestId(string path)
     {
-        var fileFullName = Path.Combine(path, _fileName);
+        var fileFullName = Path.Combine(path, FileName);
 
         if (!File.Exists(fileFullName))
         {
@@ -45,7 +45,7 @@ public class SqlExecutionPlanDoc
     }
     public void CreateDeployDocAsync(string pastaDestino, string title, string pullRequestUrl)
     {
-        string caminhoDestino = Path.Combine(pastaDestino, _fileName);
+        string caminhoDestino = Path.Combine(pastaDestino, FileName);
 
         if (File.Exists(caminhoDestino))
         {
