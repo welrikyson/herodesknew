@@ -25,25 +25,29 @@ public sealed class GetFilteredTicketsQueryHandler
             return Result.Failure<(List<TicketResponse>, int totalCount)>(DomainErrors.Member.NotExist);
         }
 
-        List<TicketResponse> ticketReponseList = tickets.Select(MapTicketToTicketResponse).ToList();
+        List<TicketResponse> ticketReponseList = tickets.Select(TicketMapper.MapTicketToTicketResponse).ToList();
 
         return Result.Success((ticketReponseList, totalCount));
-
-        static TicketResponse MapTicketToTicketResponse(Domain.Entities.Ticket ticket)
-        =>
-            new()
-            {
-                Id = ticket.Id,
-                Description = ticket.Description,
-                SlaUsed = ticket.SlaUsed,
-                Title = ticket.Title,
-                UserEmail = ticket.UserEmail,
-                Attachments = ticket.Attachments,
-                PullRequests = ticket.PullRequests,
-                CloseDate = ticket.CloseDate,
-                StartDate = ticket.StartDate,
-                Status = ticket.Status,
-                SqlFiles = ticket.SqlFiles
-            };
+        
     }
+}
+
+public static class TicketMapper
+{
+    public static TicketResponse MapTicketToTicketResponse(this Domain.Entities.Ticket ticket)
+    =>
+        new()
+        {
+            Id = ticket.Id,
+            Description = ticket.Description,
+            SlaUsed = ticket.SlaUsed,
+            Title = ticket.Title,
+            UserEmail = ticket.UserEmail,
+            Attachments = ticket.Attachments,
+            PullRequests = ticket.PullRequests,
+            CloseDate = ticket.CloseDate,
+            StartDate = ticket.StartDate,
+            Status = ticket.Status,
+            SqlFiles = ticket.SqlFiles?.Select(s => new SqlFile(s.sqlFileId,s.pullRequestId)),
+        };
 }

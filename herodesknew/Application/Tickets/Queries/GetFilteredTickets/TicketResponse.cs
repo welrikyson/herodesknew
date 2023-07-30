@@ -14,5 +14,7 @@ public sealed class TicketResponse
     public required DateTime? CloseDate { get; set; }
     public IEnumerable<Attachment>? Attachments { get; set; }
     public IEnumerable<PullRequest>? PullRequests { get; set; }
-    public IEnumerable<(string sqlFileName, int? pullRequestId)>? SqlFiles { get; set; }
+    public IEnumerable<SqlFile>? SqlFiles { get; set; }
 }
+
+public record SqlFile(int sqlFileId, int? pullRequestId);

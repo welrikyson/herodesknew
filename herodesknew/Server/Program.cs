@@ -34,6 +34,8 @@ builder.Services.AddTransient<GetFilteredTicketsQueryHandler>();
 builder.Services.AddTransient<GetAttachmentQueryHandler>();
 builder.Services.AddTransient<GetPullRequestsQueryHandler>();
 builder.Services.AddTransient<CreatePullRequestCommandHandler>();
+builder.Services.AddTransient<herodesknew.Local.Application.Tickets.Queries.GetTickets.GetTicketsQueryHandler>();
+
 
 builder.Services.AddDbContext<HerodesknewDbContext>();
 builder.Services.AddTransient<HelpdeskContext>();

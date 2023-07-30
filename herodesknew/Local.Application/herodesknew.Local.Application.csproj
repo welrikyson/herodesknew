@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Local.Domain\herodesknew.Local.Domain.csproj" />
+    <ProjectReference Include="..\Shared\herodesknew.Shared.csproj" />
   </ItemGroup>
 
 </Project>

@@ -2,7 +2,9 @@
 using herodesknew.Domain.Entities;
 using herodesknew.Domain.Repositories;
 using herodesknew.Infrastructure.Data.Contexts;
+using herodesknew.Local.Application.Tickets.Queries.GetTickets;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace herodesknew.Infrastructure.Data.Repositories;
 
@@ -10,10 +12,13 @@ internal sealed class TicketRepository : ITicketRepository
 {
     private readonly HelpdeskContext _helpdeskContext;
     private readonly HerodesknewDbContext _herodesknewDbContext;
-    public TicketRepository(HelpdeskContext helpdeskContext, HerodesknewDbContext herodesknewDbContext)
+    private readonly GetTicketsQueryHandler _getTicketsQueryHandler;
+
+    public TicketRepository(HelpdeskContext helpdeskContext, HerodesknewDbContext herodesknewDbContext, GetTicketsQueryHandler getTicketsQueryHandler)
     {
         _helpdeskContext = helpdeskContext;
         _herodesknewDbContext = herodesknewDbContext;
+        _getTicketsQueryHandler = getTicketsQueryHandler;
     }
 
     public async Task<(List<Ticket>, int)> GetFilteredTicketsAsync(int idSupportAgent, List<Filter>? filter, int skip, int take)
@@ -71,42 +76,49 @@ internal sealed class TicketRepository : ITicketRepository
             .GroupBy(p => p.TicketId)
             .ToDictionary(g => g.Key, g => g.ToList());
 
-        var tickets = new List<Ticket>();
+
+        var getTicketsResponse = _getTicketsQueryHandler.Handle(new() { Ids = ticketIds.ToArray() });
+
+        var localTicketsDictionary = getTicketsResponse.Value
+            .GroupBy(p => p.TicketId)
+            .ToDictionary(g => g.Key, g => g.ToList());
 
         // Build the Ticket objects and include the corresponding PullRequests.
-        foreach (var ticketData in ticketQueryDatas)
+        var tickets = 
+        from ticketData in ticketQueryDatas
+        let ticket = new Ticket
         {
-            var ticket = new Ticket
-            {
-                Id = ticketData.ProblemID,
-                Description = ticketData.ProblemDescription,
-                IdDepartment = ticketData.DepartmentID,
-                SlaUsed = ticketData.ProblemSLA,
-                Title = ticketData.ProblemTitle,
-                UserEmail = ticketData.ProblemEmail,
-                StartDate = ticketData.ProblemStartDate,
-                CloseDate = ticketData.ProblemCloseDate,
-                Status = ticketData.ProblemStatus.ParseStatus(),
-                Attachments = ticketData.AttachmentID.HasValue
-                    ? new List<Attachment>
-                    {
-                    new Attachment
-                    {
-                        Id = ticketData.AttachmentID.Value,
-                        FileName = ticketData.AttachmentName ?? string.Empty,
-                        FilePath = ticketData.AttachmentPath ?? string.Empty,
-                        TicketId = ticketData.ProblemID
-                    }
-                    }
-                    : new List<Attachment>(),
-                PullRequests = pullRequestsDictionary.ContainsKey(ticketData.ProblemID)
-                    ? pullRequestsDictionary[ticketData.ProblemID]
-                    : new List<PullRequest>(),                
-            };
-            tickets.Add(ticket);
+            Id = ticketData.ProblemID,
+            Description = ticketData.ProblemDescription,
+            IdDepartment = ticketData.DepartmentID,
+            SlaUsed = ticketData.ProblemSLA,
+            Title = ticketData.ProblemTitle,
+            UserEmail = ticketData.ProblemEmail,
+            StartDate = ticketData.ProblemStartDate,
+            CloseDate = ticketData.ProblemCloseDate,
+            Status = ticketData.ProblemStatus.ParseStatus(),
+            Attachments = ticketData.AttachmentID.HasValue
+                           ? new List<Attachment>
+                           {
+                            new Attachment
+                            {
+                                Id = ticketData.AttachmentID.Value,
+                                FileName = ticketData.AttachmentName ?? string.Empty,
+                                FilePath = ticketData.AttachmentPath ?? string.Empty,
+                                TicketId = ticketData.ProblemID
+                            }
+                           }
+                           : new List<Attachment>(),
+            PullRequests = pullRequestsDictionary.ContainsKey(ticketData.ProblemID)
+                           ? pullRequestsDictionary[ticketData.ProblemID]
+                           : new List<PullRequest>(),
+            SqlFiles = localTicketsDictionary.ContainsKey(ticketData.ProblemID)
+                           ? localTicketsDictionary[ticketData.ProblemID].Select(t => (t.Id, t.PullRequestId))
+                           : null
         }
+        select ticket;
 
-        return (tickets, ticketQueryDatas?.FirstOrDefault()?.TotalCount ?? 0);
+        return (tickets.ToList(), ticketQueryDatas?.FirstOrDefault()?.TotalCount ?? 0);
     }
 
     public class TicketQueryData
