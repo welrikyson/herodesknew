@@ -84,43 +84,126 @@ internal sealed class TicketRepository : ITicketRepository
             .ToDictionary(g => g.Key, g => g.ToList());
 
         // Build the Ticket objects and include the corresponding PullRequests.
-        var tickets = 
-        from ticketData in ticketQueryDatas
-        let ticket = new Ticket
-        {
-            Id = ticketData.ProblemID,
-            Description = ticketData.ProblemDescription,
-            IdDepartment = ticketData.DepartmentID,
-            SlaUsed = ticketData.ProblemSLA,
-            Title = ticketData.ProblemTitle,
-            UserEmail = ticketData.ProblemEmail,
-            StartDate = ticketData.ProblemStartDate,
-            CloseDate = ticketData.ProblemCloseDate,
-            Status = ticketData.ProblemStatus.ParseStatus(),
-            Attachments = ticketData.AttachmentID.HasValue
+        var tickets = ticketQueryDatas
+            .GroupBy(p => p.ProblemID)
+            .Select(g => new Ticket
+            {
+                Id = g.First().ProblemID,
+                Description = g.First().ProblemDescription,
+                IdDepartment = g.First().DepartmentID,
+                SlaUsed = g.First().ProblemSLA,
+                Title = g.First().ProblemTitle,
+                UserEmail = g.First().ProblemEmail,
+                StartDate = g.First().ProblemStartDate,
+                CloseDate = g.First().ProblemCloseDate,
+                Status = g.First().ProblemStatus.ParseStatus(),
+                Attachments = g.First().AttachmentID.HasValue
                            ? new List<Attachment>
                            {
                             new Attachment
                             {
-                                Id = ticketData.AttachmentID.Value,
-                                FileName = ticketData.AttachmentName ?? string.Empty,
-                                FilePath = ticketData.AttachmentPath ?? string.Empty,
-                                TicketId = ticketData.ProblemID
+                                Id = g.First().AttachmentID!.Value,
+                                FileName = g.First().AttachmentName ?? string.Empty,
+                                FilePath = g.First().AttachmentPath ?? string.Empty,
+                                TicketId = g.First().ProblemID
                             }
                            }
                            : new List<Attachment>(),
-            PullRequests = pullRequestsDictionary.ContainsKey(ticketData.ProblemID)
-                           ? pullRequestsDictionary[ticketData.ProblemID]
+                PullRequests = pullRequestsDictionary.ContainsKey(g.First().ProblemID)
+                           ? pullRequestsDictionary[g.First().ProblemID]
                            : new List<PullRequest>(),
-            SqlFiles = localTicketsDictionary.ContainsKey(ticketData.ProblemID)
-                           ? localTicketsDictionary[ticketData.ProblemID].Select(t => (t.Id, t.PullRequestId))
+                SqlFiles = localTicketsDictionary.ContainsKey(g.First().ProblemID)
+                           ? localTicketsDictionary[g.First().ProblemID].Select(t => (t.Id, t.PullRequestId))
                            : null
-        }
-        select ticket;
+            });        
 
         return (tickets.ToList(), ticketQueryDatas?.FirstOrDefault()?.TotalCount ?? 0);
     }
 
+    public async Task<Ticket?> GetTicketAsync(int ticketId)
+    {
+        using var connection = _helpdeskContext.CreateDbConnection();        
+
+        string sql = $"""
+                SELECT
+                    [p].[id] AS [ProblemID],
+                    [p].[title] AS [ProblemTitle],
+                    [p].[description] AS [ProblemDescription],
+                    [p].[uemail] AS [ProblemEmail],
+                    [p].[department] AS [DepartmentID],
+                    [p].[Status] AS [ProblemStatus],
+                    [p].[start_date] AS [ProblemStartDate],
+                    [p].[close_date] AS [ProblemCloseDate],
+                    [dbo].[fncConsumoSlaChamado]([p].[id]) AS [ProblemSLA],
+                    [anexo].[COD_UPLOAD] AS [AttachmentID],
+                    [anexo].[UPL_NOME] AS [AttachmentName],
+                    [anexo].[UPL_CAMINHO] AS [AttachmentPath],
+                	COUNT(*) OVER() AS [TotalCount]
+                FROM [dbo].[problems] [p]
+                    LEFT JOIN [dbo].[TB_HLD_UPLOAD] [anexo] ON [p].[id] = [anexo].[ID]
+                WHERE [P].[id] = @ticketId;                
+                """;
+
+        var ticketQueryDatas = await connection.QueryAsync<TicketQueryData>(
+            sql,
+            new { ticketId}
+        );
+
+        var ticketIds = ticketQueryDatas.Select(t => t.ProblemID).Distinct().ToHashSet();
+
+        // Fetch PullRequests data for all relevant tickets.
+        var pullRequestsData = await _herodesknewDbContext.PullRequests
+            .Where(p => ticketIds.Contains(p.TicketId))
+            .ToListAsync();
+
+        // Organize PullRequests data into a dictionary for efficient retrieval.
+        var pullRequestsDictionary = pullRequestsData
+            .GroupBy(p => p.TicketId)
+            .ToDictionary(g => g.Key, g => g.ToList());
+
+
+        var getTicketsResponse = _getTicketsQueryHandler.Handle(new() { Ids = ticketIds.ToArray() });
+
+        var localTicketsDictionary = getTicketsResponse.Value
+            .GroupBy(p => p.TicketId)
+            .ToDictionary(g => g.Key, g => g.ToList());
+
+        // Build the Ticket objects and include the corresponding PullRequests.
+        var tickets = ticketQueryDatas
+            .GroupBy(p => p.ProblemID)
+            .Select(g => new Ticket
+            {
+                Id = g.First().ProblemID,
+                Description = g.First().ProblemDescription,
+                IdDepartment = g.First().DepartmentID,
+                SlaUsed = g.First().ProblemSLA,
+                Title = g.First().ProblemTitle,
+                UserEmail = g.First().ProblemEmail,
+                StartDate = g.First().ProblemStartDate,
+                CloseDate = g.First().ProblemCloseDate,
+                Status = g.First().ProblemStatus.ParseStatus(),
+                Attachments = g.First().AttachmentID.HasValue
+                           ? new List<Attachment>
+                           {
+                            new Attachment
+                            {
+                                Id = g.First().AttachmentID!.Value,
+                                FileName = g.First().AttachmentName ?? string.Empty,
+                                FilePath = g.First().AttachmentPath ?? string.Empty,
+                                TicketId = g.First().ProblemID
+                            }
+                           }
+                           : new List<Attachment>(),
+                PullRequests = pullRequestsDictionary.ContainsKey(g.First().ProblemID)
+                           ? pullRequestsDictionary[g.First().ProblemID]
+                           : new List<PullRequest>(),
+                SqlFiles = localTicketsDictionary.ContainsKey(g.First().ProblemID)
+                           ? localTicketsDictionary[g.First().ProblemID].Select(t => (t.Id, t.PullRequestId))
+                           : null
+            });
+
+        return tickets.SingleOrDefault();
+    }
     public class TicketQueryData
     {
         public int ProblemID { get; set; }

@@ -2,6 +2,7 @@ using herodesknew.Application.Attachments.Queries.GetAttachment;
 using herodesknew.Application.PullRequests.Commands.CreatePullRequest;
 using herodesknew.Application.PullRequests.Queries.GetPullRequests;
 using herodesknew.Application.Tickets.Queries.GetFilteredTickets;
+using herodesknew.Application.Tickets.Queries.GetTicket;
 using herodesknew.Domain.AppSettingEntities;
 using herodesknew.Domain.Repositories;
 using herodesknew.Infrastructure.Data.Contexts;
@@ -31,6 +32,7 @@ builder.Services
 #region services install
 //TODO: Refactory service install 
 builder.Services.AddTransient<GetFilteredTicketsQueryHandler>();
+builder.Services.AddTransient<GetTicketQueryHandler>();
 builder.Services.AddTransient<GetAttachmentQueryHandler>();
 builder.Services.AddTransient<GetPullRequestsQueryHandler>();
 builder.Services.AddTransient<CreatePullRequestCommandHandler>();

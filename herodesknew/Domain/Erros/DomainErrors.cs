@@ -23,6 +23,13 @@ namespace herodesknew.Domain.Erros
                "The provided credentials are invalid");
         }
 
+        public static class Ticket
+        {
+            public static readonly Func<int, Error> NotFound = ticketId => new Error(
+                "Ticket.NotFound",
+                $"The Ticket with the identifier {ticketId} was not found.");
+        }
+
         public static class Gathering
         {
             public static readonly Func<Guid, Error> NotFound = id => new Error(
