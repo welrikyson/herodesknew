@@ -14,7 +14,8 @@ public class SqlFileController : Controller
     {
         _openSqlFileCommandHandler = openSqlFileCommandHandler;
     }
-    [HttpPost]
+
+    [HttpPost("Open")]
     public IActionResult OpenSqlFile(int sqlFileId, int ticketId)
     {
         var result = _openSqlFileCommandHandler.Handle(new OpenSqlFileCommand() { SqlFileId = sqlFileId, TicketId = ticketId });
