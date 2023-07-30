@@ -1,6 +1,7 @@
 using herodesknew.Application.Attachments.Queries.GetAttachment;
 using herodesknew.Application.PullRequests.Commands.CreatePullRequest;
 using herodesknew.Application.PullRequests.Queries.GetPullRequests;
+using herodesknew.Application.SqlFiles.Commands.OpenSqlFile;
 using herodesknew.Application.Tickets.Queries.GetFilteredTickets;
 using herodesknew.Application.Tickets.Queries.GetTicket;
 using herodesknew.Domain.AppSettingEntities;
@@ -36,6 +37,9 @@ builder.Services.AddTransient<GetTicketQueryHandler>();
 builder.Services.AddTransient<GetAttachmentQueryHandler>();
 builder.Services.AddTransient<GetPullRequestsQueryHandler>();
 builder.Services.AddTransient<CreatePullRequestCommandHandler>();
+builder.Services.AddTransient<OpenSqlFileCommandHandler>();
+
+builder.Services.AddTransient<herodesknew.Local.Application.SqlFiles.Commands.OpenSqlFile.OpenSqlFileCommandHandler>();
 builder.Services.AddTransient<herodesknew.Local.Application.Tickets.Queries.GetTickets.GetTicketsQueryHandler>();
 
 
