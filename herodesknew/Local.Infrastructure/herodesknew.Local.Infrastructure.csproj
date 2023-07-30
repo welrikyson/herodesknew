@@ -14,4 +14,8 @@
     <ProjectReference Include="..\Local.Domain\herodesknew.Local.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\Repositories\" />
+  </ItemGroup>
+
 </Project>

@@ -1,4 +1,3 @@
-using DocumentFormat.OpenXml.Drawing;
 using herodesknew.Application.Attachments.Queries.GetAttachment;
 using herodesknew.Application.PullRequests.Commands.CreatePullRequest;
 using herodesknew.Application.PullRequests.Queries.GetPullRequests;
@@ -7,8 +6,6 @@ using herodesknew.Domain.AppSettingEntities;
 using herodesknew.Domain.Repositories;
 using herodesknew.Infrastructure.Data.Contexts;
 using herodesknew.Infrastructure.Data.Repositories;
-using herodesknew.Local.Application.SqlFiles.Queries.GetSqlFile;
-using herodesknew.Local.Domain.Utils;
 using Scrutor;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,10 +34,8 @@ builder.Services.AddTransient<GetFilteredTicketsQueryHandler>();
 builder.Services.AddTransient<GetAttachmentQueryHandler>();
 builder.Services.AddTransient<GetPullRequestsQueryHandler>();
 builder.Services.AddTransient<CreatePullRequestCommandHandler>();
-builder.Services.AddTransient<SqlExecutionPlanDoc>();
 
 builder.Services.AddDbContext<HerodesknewDbContext>();
-builder.Services.AddTransient<ISqlFileRepository, LocalSqlFileRepository>();
 builder.Services.AddTransient<HelpdeskContext>();
 
 var azureReposSettings = builder.Configuration.GetSection("AzureReposSettings").Get<AzureReposSettings>()!;
@@ -57,7 +52,6 @@ builder.Services.AddCors(options =>
         });
 });
 
-builder.Services.AddTransient<GetSqlFileQueryHandler>();
 #endregion
 
 
