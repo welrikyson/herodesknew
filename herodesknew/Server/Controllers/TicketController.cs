@@ -21,8 +21,8 @@ public class TicketController : Controller
         _getTicketQueryHandler = getTicketQueryHandler;
     }
 
-    [HttpPost]
-    public async Task<IActionResult> GetAsync(int skip, int take)
+    [HttpPost("Filter")]
+    public async Task<IActionResult> FilterTicketsAsync(int skip, int take)
     {
         var reponse = await _getFilteredTicketsQueryHandler.Handle(new GetFilteredTicketsQuery()
         {
@@ -38,8 +38,8 @@ public class TicketController : Controller
         });
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetAsync(int ticketId)
+    [HttpGet("{ticketId}")]
+    public async Task<IActionResult> GetTicketByIdAsync(int ticketId)
     {
         var reponse = await _getTicketQueryHandler.Handle(new() { TicketId = ticketId });
 
