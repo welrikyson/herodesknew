@@ -19,8 +19,7 @@ namespace herodesknew.Infrastructure.Services
         }
         public Result OpenFile(int ticketId, int sqlFileId)
         {
-            return _openSqlFileCommandHandler.Handle(new OpenSqlFileCommand() { SqlFileId = sqlFileId, TicketId = ticketId});
-            
+            return _openSqlFileCommandHandler.Handle(new OpenSqlFileCommand() { SqlFileId = sqlFileId, TicketId = ticketId});            
         }
     }
 }

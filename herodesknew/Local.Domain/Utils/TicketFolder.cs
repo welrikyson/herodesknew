@@ -54,10 +54,11 @@ public static class SqlExecutionPlanDoc
     public static readonly string refCellMotivo = "D11";
     public static readonly string FileName = "SIST 030 - 01 - Plano de Deploy.xlsx";
     private static readonly string _planoDeployfilePath;
-
+    public static readonly string PathDefaultToUse;
     static SqlExecutionPlanDoc()
     {
         _planoDeployfilePath = Path.Combine(Environment.CurrentDirectory, FileName);
+        PathDefaultToUse = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
     }
 
     public static int? GetPullRequestId(string path)
