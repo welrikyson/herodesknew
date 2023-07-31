@@ -9,6 +9,7 @@ namespace herodesknew.Domain.Services
 {
     public interface ISqlFileService
     {
+        Result CreateSqlFile(int ticketId);
         Result OpenFile(int ticketId, int sqlFileId);
     }
 }
