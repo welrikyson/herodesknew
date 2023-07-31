@@ -41,6 +41,7 @@ public static class ServiceInstaller
         services.AddTransient<Local.Application.SqlFiles.Commands.CreateSqlFile.CreateSqlFileCommandHandler>();
         services.AddTransient<Local.Application.Tickets.Queries.GetTickets.GetTicketsQueryHandler>();
         services.AddTransient<Local.Application.SqlExecutionDocs.Commands.UseSqlExecutionDoc.UseSqlExecutionDocCommandHandler>();
+        services.AddTransient<Local.Application.SqlFiles.Queries.GetSqlFile.GetSqlFileQueyHandler>();
 
         services.AddDbContext<HerodesknewDbContext>();
         services.AddTransient<HelpdeskContext>();
