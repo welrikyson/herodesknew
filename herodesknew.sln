@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "herodesknew.Local.Infrastru
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "herodesknew.Local.Domain", "herodesknew\Local.Domain\herodesknew.Local.Domain.csproj", "{2CD668AC-358E-4778-853B-A0F9C246AA02}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "herodesknew.test.Application", "Tests\herodesknew.test.Application\herodesknew.test.Application.csproj", "{D92B3F83-7CB5-4841-BBF8-1EC2C12EC547}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "herodesknew.test.Application", "Tests\herodesknew.test.Application\herodesknew.test.Application.csproj", "{D92B3F83-7CB5-4841-BBF8-1EC2C12EC547}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

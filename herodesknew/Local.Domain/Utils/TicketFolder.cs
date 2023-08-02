@@ -1,15 +1,13 @@
 ﻿using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml.Wordprocessing;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace herodesknew.Local.Domain.Utils;
 
 public static class TicketFolderManager
 {
-    public static List<IEnumerable<(int Id,string dirSltFullName, string PathFullName, int TicketId)>> GetTicketSubDirectoriesWithScripts(int[] tickets)
+    public static List<IEnumerable<(int Id, string dirSltFullName, string PathFullName, int TicketId)>> GetTicketSubDirectoriesWithScripts(int[] tickets)
     {
         var ticketDir = new DirectoryInfo(TicketFolderSettings.Root);
         var currentYear = DateTime.Now.Year;
@@ -40,7 +38,7 @@ public static class TicketFolderManager
             .Where(dir => dir.Name.IsNumber())
             .Select(dir =>
             {
-                return (Id: Convert.ToInt32(dir.Name), dirSltFullName: dirSlt.FullName ,PathFullName: dir.FullName, ticketScriptFolder.TicketId);
+                return (Id: Convert.ToInt32(dir.Name), dirSltFullName: dirSlt.FullName, PathFullName: dir.FullName, ticketScriptFolder.TicketId);
             })
             select someItem).ToList();
 

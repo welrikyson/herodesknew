@@ -2,9 +2,7 @@
 using herodesknew.Domain.Entities;
 using herodesknew.Domain.Repositories;
 using herodesknew.Infrastructure.Data.Contexts;
-using herodesknew.Local.Application.Tickets.Queries.GetTickets;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace herodesknew.Infrastructure.Data.Repositories;
 
@@ -12,13 +10,11 @@ internal sealed class TicketRepository : ITicketRepository
 {
     private readonly HelpdeskContext _helpdeskContext;
     private readonly HerodesknewDbContext _herodesknewDbContext;
-    private readonly GetTicketsQueryHandler _getTicketsQueryHandler;
 
-    public TicketRepository(HelpdeskContext helpdeskContext, HerodesknewDbContext herodesknewDbContext, GetTicketsQueryHandler getTicketsQueryHandler)
+    public TicketRepository(HelpdeskContext helpdeskContext, HerodesknewDbContext herodesknewDbContext)
     {
         _helpdeskContext = helpdeskContext;
         _herodesknewDbContext = herodesknewDbContext;
-        _getTicketsQueryHandler = getTicketsQueryHandler;
     }
 
     public async Task<(List<Ticket>, int)> GetFilteredTicketsAsync(int idSupportAgent, List<Filter>? filter, int skip, int take)
@@ -76,13 +72,6 @@ internal sealed class TicketRepository : ITicketRepository
             .GroupBy(p => p.TicketId)
             .ToDictionary(g => g.Key, g => g.ToList());
 
-
-        var getTicketsResponse = _getTicketsQueryHandler.Handle(new() { Ids = ticketIds.ToArray() });
-
-        var localTicketsDictionary = getTicketsResponse.Value
-            .GroupBy(p => p.TicketId)
-            .ToDictionary(g => g.Key, g => g.ToList());
-
         // Build the Ticket objects and include the corresponding PullRequests.
         var tickets = ticketQueryDatas
             .GroupBy(p => p.ProblemID)
@@ -112,17 +101,15 @@ internal sealed class TicketRepository : ITicketRepository
                 PullRequests = pullRequestsDictionary.ContainsKey(g.First().ProblemID)
                            ? pullRequestsDictionary[g.First().ProblemID]
                            : new List<PullRequest>(),
-                SqlFiles = localTicketsDictionary.ContainsKey(g.First().ProblemID)
-                           ? localTicketsDictionary[g.First().ProblemID].Select(t => (t.Id, t.PullRequestId))
-                           : null
-            });        
+
+            });
 
         return (tickets.ToList(), ticketQueryDatas?.FirstOrDefault()?.TotalCount ?? 0);
     }
 
     public async Task<Ticket?> GetTicketAsync(int ticketId)
     {
-        using var connection = _helpdeskContext.CreateDbConnection();        
+        using var connection = _helpdeskContext.CreateDbConnection();
 
         string sql = $"""
                 SELECT
@@ -146,7 +133,7 @@ internal sealed class TicketRepository : ITicketRepository
 
         var ticketQueryDatas = await connection.QueryAsync<TicketQueryData>(
             sql,
-            new { ticketId}
+            new { ticketId }
         );
 
         var ticketIds = ticketQueryDatas.Select(t => t.ProblemID).Distinct().ToHashSet();
@@ -158,13 +145,6 @@ internal sealed class TicketRepository : ITicketRepository
 
         // Organize PullRequests data into a dictionary for efficient retrieval.
         var pullRequestsDictionary = pullRequestsData
-            .GroupBy(p => p.TicketId)
-            .ToDictionary(g => g.Key, g => g.ToList());
-
-
-        var getTicketsResponse = _getTicketsQueryHandler.Handle(new() { Ids = ticketIds.ToArray() });
-
-        var localTicketsDictionary = getTicketsResponse.Value
             .GroupBy(p => p.TicketId)
             .ToDictionary(g => g.Key, g => g.ToList());
 
@@ -197,9 +177,6 @@ internal sealed class TicketRepository : ITicketRepository
                 PullRequests = pullRequestsDictionary.ContainsKey(g.First().ProblemID)
                            ? pullRequestsDictionary[g.First().ProblemID]
                            : new List<PullRequest>(),
-                SqlFiles = localTicketsDictionary.ContainsKey(g.First().ProblemID)
-                           ? localTicketsDictionary[g.First().ProblemID].Select(t => (t.Id, t.PullRequestId))
-                           : null
             });
 
         return tickets.SingleOrDefault();

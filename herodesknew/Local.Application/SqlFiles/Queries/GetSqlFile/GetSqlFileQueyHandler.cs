@@ -1,10 +1,5 @@
 ﻿using herodesknew.Local.Domain.Utils;
 using herodesknew.Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace herodesknew.Local.Application.SqlFiles.Queries.GetSqlFile
 {

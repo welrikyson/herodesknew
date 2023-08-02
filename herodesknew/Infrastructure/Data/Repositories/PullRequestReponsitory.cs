@@ -1,10 +1,6 @@
-﻿using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Spreadsheet;
-using herodesknew.Domain.Entities;
+﻿using herodesknew.Domain.Entities;
 using herodesknew.Domain.Repositories;
 using herodesknew.Infrastructure.Data.Contexts;
-using Microsoft.Extensions.Configuration;
-using System.Text.RegularExpressions;
 
 namespace herodesknew.Infrastructure.Data.Repositories
 {

@@ -1,7 +1,5 @@
 ﻿using herodesknew.Application.Tickets.Queries.GetFilteredTickets;
 using herodesknew.Application.Tickets.Queries.GetTicket;
-using herodesknew.Local.Application.Tickets.Queries.GetTickets;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 

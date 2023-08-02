@@ -1,6 +1,4 @@
 ﻿using herodesknew.Application.PullRequests.Commands.CreatePullRequest;
-using herodesknew.Domain.Repositories;
-using herodesknew.Domain.Services;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,9 +16,9 @@ namespace herodesknew.Server.Controllers
             _createPullRequestCommandHandler = createPullRequestCommandHandler;
         }
         [HttpPost("Create")]
-        public async Task<IActionResult> CreatePullRequestAsync(int ticketId, int sqlFileId)
+        public async Task<IActionResult> CreatePullRequestAsync(int ticketId, string content)
         {
-            var result = await _createPullRequestCommandHandler.Handle(new CreatePullRequestCommand() { SqlFileId = sqlFileId, TicketId = ticketId });
+            var result = await _createPullRequestCommandHandler.Handle(new CreatePullRequestCommand() { TicketId = ticketId, Content = content });
             if (result.IsFailure)
             {
                 return BadRequest(result.Error);

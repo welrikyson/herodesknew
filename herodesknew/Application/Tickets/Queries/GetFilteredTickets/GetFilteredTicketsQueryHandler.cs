@@ -28,7 +28,7 @@ public sealed class GetFilteredTicketsQueryHandler
         List<TicketResponse> ticketReponseList = tickets.Select(TicketMapper.MapTicketToTicketResponse).ToList();
 
         return Result.Success((ticketReponseList, totalCount));
-        
+
     }
 }
 
@@ -48,6 +48,5 @@ public static class TicketMapper
             CloseDate = ticket.CloseDate,
             StartDate = ticket.StartDate,
             Status = ticket.Status,
-            SqlFiles = ticket.SqlFiles?.Select(s => new SqlFile(s.sqlFileId,s.pullRequestId)),
         };
 }

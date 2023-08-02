@@ -1,11 +1,6 @@
 ﻿using herodesknew.Application.Tickets.Queries.GetFilteredTickets;
 using herodesknew.Domain.Repositories;
 using herodesknew.Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace herodesknew.Application.Tickets.Queries.GetTicket
 {
@@ -22,7 +17,7 @@ namespace herodesknew.Application.Tickets.Queries.GetTicket
         {
             var ticket = await _ticketRepository.GetTicketAsync(getTicketQuery.TicketId);
 
-            if(ticket == null)
+            if (ticket == null)
             {
                 return Result.Failure<TicketResponse>(Domain.Erros.DomainErrors.Ticket.NotFound(getTicketQuery.TicketId));
             }
