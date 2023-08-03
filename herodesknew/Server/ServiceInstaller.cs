@@ -13,13 +13,11 @@ public static class ServiceInstaller
 {
     public static void Install(this IServiceCollection services, IConfiguration configuration)
     {
-
         services
             .Scan(
                 selector => selector
                     .FromAssemblies(
-                        Infrastructure.AssemblyReference.Assembly,
-                        Local.Domain.AssemblyReference.Assembly)
+                        Infrastructure.AssemblyReference.Assembly)
                     .AddClasses(false)
                     .UsingRegistrationStrategy(RegistrationStrategy.Skip)
                     .AsMatchingInterface()
@@ -36,15 +34,13 @@ public static class ServiceInstaller
 
         services.AddSingleton(configuration.GetSection("AzureReposSettings").Get<AzureReposSettings>()!);
 
-        services.AddCors(options =>
-        {
-            options.AddPolicy("AllowAllOrigins",
-                builder =>
-                {
-                    builder.AllowAnyOrigin()
-                           .AllowAnyHeader()
-                           .AllowAnyMethod();
-                });
-        });
+        services.AddCors(
+            options => options
+                .AddPolicy(
+                    "AllowAllOrigins", 
+                    builder => builder
+                        .AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()));
     }
 }

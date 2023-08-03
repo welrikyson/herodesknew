@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "herodesknew.Local.Domain", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "herodesknew.test.Application", "Tests\herodesknew.test.Application\herodesknew.test.Application.csproj", "{D92B3F83-7CB5-4841-BBF8-1EC2C12EC547}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "herodesknew.Local.Server", "herodesknew\herodesknew.Local.Server\herodesknew.Local.Server.csproj", "{0CC8EEA5-F42C-4E64-A1C7-587279693772}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,10 @@ Global
 		{D92B3F83-7CB5-4841-BBF8-1EC2C12EC547}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D92B3F83-7CB5-4841-BBF8-1EC2C12EC547}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D92B3F83-7CB5-4841-BBF8-1EC2C12EC547}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CC8EEA5-F42C-4E64-A1C7-587279693772}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CC8EEA5-F42C-4E64-A1C7-587279693772}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CC8EEA5-F42C-4E64-A1C7-587279693772}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CC8EEA5-F42C-4E64-A1C7-587279693772}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,6 +82,7 @@ Global
 		{BE2F37EC-226F-4236-9B04-87EC6AB3EBA6} = {65CAC76A-2CB0-4F6F-8617-EEC7A0935AE4}
 		{2CD668AC-358E-4778-853B-A0F9C246AA02} = {65CAC76A-2CB0-4F6F-8617-EEC7A0935AE4}
 		{D92B3F83-7CB5-4841-BBF8-1EC2C12EC547} = {C2B67BB7-BECE-49A6-A580-CBED4EB2D682}
+		{0CC8EEA5-F42C-4E64-A1C7-587279693772} = {65CAC76A-2CB0-4F6F-8617-EEC7A0935AE4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B769C7CC-8332-4BB6-8C7A-FD694AE6D724}
