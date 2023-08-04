@@ -21,7 +21,7 @@ namespace herodesknew.Application.PullRequests.Commands.CreatePullRequest
             _pullRequestRepository = pullRequestRepository;
         }
 
-        public async Task<Result<int>> Handle(CreatePullRequestCommand createPullRequestCommand)
+        public async Task<Result<string>> Handle(CreatePullRequestCommand createPullRequestCommand)
         {
             int ticketId = createPullRequestCommand.TicketId;
             var id = Ulid.NewUlid();
@@ -46,16 +46,15 @@ namespace herodesknew.Application.PullRequests.Commands.CreatePullRequest
             var gitPullRequest = CreateGitPullRequest(sourceBranch, targetBranch, pullRequestTitle, pullRequestDescription);
             var pullRequest = await gitClient.CreatePullRequestAsync(gitPullRequest, repo.Id);
 
-            await UpdatePullRequest(gitClient, push, repo.Id, pullRequest.PullRequestId);
+            await UpdatePullRequest(gitClient, push, repo.Id, pullRequest.PullRequestId);           
 
-            var pullRequestResponse = new PullRequest()
+            _pullRequestRepository.AddPullRequest(new ()
             {
                 Id = pullRequest.CodeReviewId,
                 TicketId = ticketId
-            };
+            });
 
-            _pullRequestRepository.AddPullRequest(pullRequestResponse);
-            return pullRequest.CodeReviewId;
+            return pullRequest.Url;
         }
 
         private GitHttpClient GetGitClient()

@@ -19,13 +19,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "herodesknew.Server", "herod
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Local", "Local", "{65CAC76A-2CB0-4F6F-8617-EEC7A0935AE4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "herodesknew.Local.Infrastructure", "herodesknew\Local.Infrastructure\herodesknew.Local.Infrastructure.csproj", "{BE2F37EC-226F-4236-9B04-87EC6AB3EBA6}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "herodesknew.Local.Domain", "herodesknew\Local.Domain\herodesknew.Local.Domain.csproj", "{2CD668AC-358E-4778-853B-A0F9C246AA02}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "herodesknew.test.Application", "Tests\herodesknew.test.Application\herodesknew.test.Application.csproj", "{D92B3F83-7CB5-4841-BBF8-1EC2C12EC547}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "herodesknew.Local.Server", "herodesknew\herodesknew.Local.Server\herodesknew.Local.Server.csproj", "{0CC8EEA5-F42C-4E64-A1C7-587279693772}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "herodesknew.Local.Server", "herodesknew\herodesknew.Local.Server\herodesknew.Local.Server.csproj", "{0CC8EEA5-F42C-4E64-A1C7-587279693772}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,10 +55,6 @@ Global
 		{0F35BB70-7A6B-46EA-8130-B626E6848418}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F35BB70-7A6B-46EA-8130-B626E6848418}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F35BB70-7A6B-46EA-8130-B626E6848418}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BE2F37EC-226F-4236-9B04-87EC6AB3EBA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BE2F37EC-226F-4236-9B04-87EC6AB3EBA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BE2F37EC-226F-4236-9B04-87EC6AB3EBA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BE2F37EC-226F-4236-9B04-87EC6AB3EBA6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2CD668AC-358E-4778-853B-A0F9C246AA02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2CD668AC-358E-4778-853B-A0F9C246AA02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2CD668AC-358E-4778-853B-A0F9C246AA02}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -79,7 +73,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{858722C7-DF3F-4433-BE1B-2CC33F7906F5} = {65CAC76A-2CB0-4F6F-8617-EEC7A0935AE4}
-		{BE2F37EC-226F-4236-9B04-87EC6AB3EBA6} = {65CAC76A-2CB0-4F6F-8617-EEC7A0935AE4}
 		{2CD668AC-358E-4778-853B-A0F9C246AA02} = {65CAC76A-2CB0-4F6F-8617-EEC7A0935AE4}
 		{D92B3F83-7CB5-4841-BBF8-1EC2C12EC547} = {C2B67BB7-BECE-49A6-A580-CBED4EB2D682}
 		{0CC8EEA5-F42C-4E64-A1C7-587279693772} = {65CAC76A-2CB0-4F6F-8617-EEC7A0935AE4}

@@ -1,6 +1,7 @@
 ﻿using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace herodesknew.Local.Domain.Utils;
@@ -125,6 +126,17 @@ public static class StringExtension
             }
         }
         return false;
+    }
+
+    public static string ExtractAlphanumeric(this string input)
+    {
+        StringBuilder sb = new();
+
+        input.Where(c => char.IsLetterOrDigit(c))
+             .ToList()
+             .ForEach(c => sb.Append(c));
+
+        return sb.ToString();
     }
 }
 
