@@ -44,6 +44,6 @@ public class SqlFileController : Controller
     {                
         var result = _getSqlFileQueyHandler.Handle(new GetSqlFileQuey(ticketId, sqlFileId));
 
-        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+        return result.IsSuccess ? Ok(new { SqlFilePath = result.Value }) : BadRequest(result.Error);
     }
 }
