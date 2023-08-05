@@ -16,15 +16,22 @@ namespace herodesknew.Server.Controllers
             _createPullRequestCommandHandler = createPullRequestCommandHandler;
         }
         [HttpPost("Create")]
-        public async Task<IActionResult> CreatePullRequestAsync(int ticketId, string content)
+        public async Task<IActionResult> CreatePullRequestAsync([FromBody] CreatePullRequest createPullRequest)
         {
-            var result = await _createPullRequestCommandHandler.Handle(new CreatePullRequestCommand() { TicketId = ticketId, Content = content });
+            var result = await _createPullRequestCommandHandler.Handle(new () 
+            { 
+                TicketId = createPullRequest.TicketId, 
+                Content = createPullRequest.Content 
+            });
+
             if (result.IsFailure)
             {
                 return BadRequest(result.Error);
             }
 
-            return Ok(new { Message = $"Pull request {result.Value} criado com sucesso com base nos IDs do item e arquivo!" });
+            return Ok(new { PullRequestUrl = result.Value });
         }
     }
+
+    public record CreatePullRequest(int TicketId, string Content);
 }

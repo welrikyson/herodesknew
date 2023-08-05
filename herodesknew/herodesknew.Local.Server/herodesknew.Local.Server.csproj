@@ -16,4 +16,10 @@
     <ProjectReference Include="..\Local.Application\herodesknew.Local.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="SIST 030 - 01 - Plano de Deploy.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

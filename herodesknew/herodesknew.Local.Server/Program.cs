@@ -1,4 +1,5 @@
 using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using herodesknew.Local.Application.PullRequests.Commands.CreatePullRequest;
 using herodesknew.Local.Application.SqlExecutionDocs.Commands.CreateSqlExecutionDoc;
 using herodesknew.Local.Application.SqlFiles.Commands.CreateSqlFile;
 using herodesknew.Local.Application.SqlFiles.Commands.OpenSqlFile;
@@ -16,6 +17,7 @@ builder.Services.AddTransient<CreateSqlFileCommandHandler>();
 builder.Services.AddTransient<GetSqlFileQueyHandler>();
 
 builder.Services.AddTransient<CreateSqlExecutionDocHandler>();
+builder.Services.AddTransient<CreatePullRequestCommandHandler>();
 
 
 

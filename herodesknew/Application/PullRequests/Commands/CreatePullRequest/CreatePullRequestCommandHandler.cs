@@ -54,7 +54,7 @@ namespace herodesknew.Application.PullRequests.Commands.CreatePullRequest
                 TicketId = ticketId
             });
 
-            return pullRequest.Url;
+            return $"{pullRequest.Repository.RemoteUrl}/pullrequest/{pullRequest.PullRequestId}";
         }
 
         private GitHttpClient GetGitClient()
