@@ -44,7 +44,7 @@ public sealed class CreatePullRequestCommandHandler
             if(responseMensage.IsSuccessStatusCode)
             {
                 var response  = await responseMensage.Content.ReadFromJsonAsync<CreatePullRequestResponse>();
-                SqlExecutionPlanDoc.CreateDeployDocAsync(PathFullName, FileReader.ReadFirstLineFromFile(path)!, response!.PullRequestUrl);
+                SqlExecutionPlanDoc.CreateDeployDocAsync(PathFullName, FileReader.ReadFirstLineFromFile(path)!.ExtractAlphanumeric(), response!.PullRequestUrl);
                 return Result.Success();                
             }
             else
