@@ -33,7 +33,7 @@ public sealed class CreatePullRequestCommandHandler
                 return Result.Failure(Error.NullValue);
             }
 
-            using HttpClient client = new() { BaseAddress = new("http://localhost:5147") };
+            using HttpClient client = new() { BaseAddress = new("http://localhost:5000") };
 
             var responseMensage = await client.PostAsJsonAsync("/PullRequest/Create", new
             {

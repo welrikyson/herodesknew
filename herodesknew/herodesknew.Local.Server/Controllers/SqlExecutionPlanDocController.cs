@@ -1,4 +1,4 @@
-﻿using herodesknew.Local.Application.SqlExecutionDocs.Commands.CreateSqlExecutionDoc;
+﻿using herodesknew.Local.Application.SqlExecutionDocs.Commands.UseSqlExecutionDoc;
 using herodesknew.Local.Application.SqlFiles.Commands.CreateSqlFile;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -10,17 +10,17 @@ namespace herodesknew.Local.Server.Controllers;
 [EnableCors("AllowAllOrigins")]
 public class SqlExecutionDocController : Controller
 {
-    private readonly CreateSqlExecutionDocHandler _createSqlExecutionDocHandler;
+    private readonly UseSqlExecutionDocCommandHandler _useSqlExecutionDocCommandHandler;
 
-    public SqlExecutionDocController(CreateSqlExecutionDocHandler createSqlExecutionDocHandler)
-    {
-        _createSqlExecutionDocHandler = createSqlExecutionDocHandler;
-    }
+    public SqlExecutionDocController(UseSqlExecutionDocCommandHandler useSqlExecutionDocCommandHandler)
+    {        
+        _useSqlExecutionDocCommandHandler = useSqlExecutionDocCommandHandler;
+    }    
 
-    [HttpPost("Create")]
-    public IActionResult CreateSqlFile(int ticketId, int sqlFileId, string pullRequestUrl)
+    [HttpPost("Use")]
+    public IActionResult UseSqlFile(int ticketId, int sqlFileId)
     {
-        var result = _createSqlExecutionDocHandler.Handle(new(ticketId,sqlFileId,pullRequestUrl));
+        var result = _useSqlExecutionDocCommandHandler.Handle(new(ticketId, sqlFileId));
 
         return result.IsSuccess ? Ok() : BadRequest(result.Error);
     }

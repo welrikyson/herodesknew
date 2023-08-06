@@ -24,9 +24,9 @@ namespace herodesknew.Application.PullRequests.Commands.CreatePullRequest
         public async Task<Result<string>> Handle(CreatePullRequestCommand createPullRequestCommand)
         {
             int ticketId = createPullRequestCommand.TicketId;
-            var id = Ulid.NewUlid();
-
             string content = createPullRequestCommand.Content;
+
+            var id = Ulid.NewUlid();
 
             string sourceBranch = $"refs/heads/{ticketId}-{id}";
             const string targetBranch = "refs/heads/master";

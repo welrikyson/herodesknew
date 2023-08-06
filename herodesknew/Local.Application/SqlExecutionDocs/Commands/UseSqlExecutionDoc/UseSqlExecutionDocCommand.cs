@@ -1,8 +1,4 @@
-﻿namespace herodesknew.Local.Application.SqlExecutionDocs.Commands.UseSqlExecutionDoc
-{
-    public sealed class UseSqlExecutionDocCommand
-    {
-        public required int TicketId { get; set; }
-        public required int SqlFileId { get; set; }
-    }
-}
+﻿namespace herodesknew.Local.Application.SqlExecutionDocs.Commands.UseSqlExecutionDoc;
+
+public record UseSqlExecutionDocCommand(int TicketId, int SqlFileId);
+
