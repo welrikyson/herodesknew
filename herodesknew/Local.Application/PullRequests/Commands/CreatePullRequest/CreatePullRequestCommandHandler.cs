@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace herodesknew.Local.Application.PullRequests.Commands.CreatePullRequest;
@@ -35,6 +36,14 @@ public sealed class CreatePullRequestCommandHandler
 
             using HttpClient client = new() { BaseAddress = new("http://localhost:5000") };
 
+            string padrao = @"--HD (\d+) - (.+)";
+            Match match = Regex.Match(FileReader.ReadFirstLineFromFile(path)!, padrao);
+
+            if (!match.Success)
+            {
+                return Result.Failure(Error.NullValue);
+            }
+
             var responseMensage = await client.PostAsJsonAsync("/PullRequest/Create", new
             {
                 TicketId = createPullRequestCommand.TicketId,
@@ -44,7 +53,7 @@ public sealed class CreatePullRequestCommandHandler
             if(responseMensage.IsSuccessStatusCode)
             {
                 var response  = await responseMensage.Content.ReadFromJsonAsync<CreatePullRequestResponse>();
-                SqlExecutionPlanDoc.CreateDeployDocAsync(PathFullName, FileReader.ReadFirstLineFromFile(path)!.ExtractAlphanumeric(), response!.PullRequestUrl);
+                SqlExecutionPlanDoc.CreateDeployDocAsync(PathFullName, $"{TicketId} - {match.Groups[2]}", response!.PullRequestUrl);
                 return Result.Success();                
             }
             else
