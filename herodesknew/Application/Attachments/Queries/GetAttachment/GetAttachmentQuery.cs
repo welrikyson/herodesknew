@@ -2,5 +2,5 @@
 
 public class GetAttachmentQuery
 {
-    public required int AttachmentId { get; set; }
+    public required string AttachmentFileName { get; set; }
 }

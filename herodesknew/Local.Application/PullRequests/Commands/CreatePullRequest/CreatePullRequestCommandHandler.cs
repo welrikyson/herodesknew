@@ -47,7 +47,7 @@ public sealed class CreatePullRequestCommandHandler
             var responseMensage = await client.PostAsJsonAsync("/PullRequest/Create", new
             {
                 TicketId = createPullRequestCommand.TicketId,
-                Content = File.ReadAllText(path)
+                Content = File.ReadAllText(path, Encoding.Latin1)
             });
 
             if(responseMensage.IsSuccessStatusCode)

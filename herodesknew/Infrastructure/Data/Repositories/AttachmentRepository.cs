@@ -35,5 +35,27 @@ namespace herodesknew.Infrastructure.Data.Repositories
                 );
             return attachment;
         }
+
+        public async Task<Attachment?> GetAttachmentBy(string attachementFileName)
+        {
+            using var connection = _helpdeskContext.CreateDbConnection();
+
+            string sql = $"""
+                select 
+                	[anexo].[COD_UPLOAD] AS [Id],
+                    [anexo].[UPL_NOME] AS [FileName],
+                    [anexo].[UPL_CAMINHO] AS [FilePath],
+                	[anexo].[ID] AS [TicketId]
+
+                from [dbo].[TB_HLD_UPLOAD] [anexo]
+
+                where [anexo].[UPL_NOME] = @attachementFileName;              
+                """;
+            var attachment = await connection.QuerySingleOrDefaultAsync<Attachment>(
+                sql,
+                new { attachementFileName }
+                );
+            return attachment;
+        }
     }
 }

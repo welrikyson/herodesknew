@@ -16,24 +16,24 @@ public sealed class GetAttachmentQueryHandler
 
     public async Task<Result<AttachmentResponse>> Handle(GetAttachmentQuery getAttachmentQuery)
     {
-        if (getAttachmentQuery.AttachmentId <= 0)
+        if (string.IsNullOrEmpty(getAttachmentQuery.AttachmentFileName))
         {
-            return Result.Failure<AttachmentResponse>(DomainErrors.Attachment.NotFound(getAttachmentQuery.AttachmentId));
+            return Result.Failure<AttachmentResponse>(DomainErrors.Attachment.NotFound(getAttachmentQuery.AttachmentFileName));
         }
 
-        var attachment = await _attachmentRepository.GetAttachmentBy(getAttachmentQuery.AttachmentId);
+        var attachment = await _attachmentRepository.GetAttachmentBy(getAttachmentQuery.AttachmentFileName);
 
         if (attachment == null)
         {
-            return Result.Failure<AttachmentResponse>(DomainErrors.Attachment.NotFound(getAttachmentQuery.AttachmentId));
+            return Result.Failure<AttachmentResponse>(DomainErrors.Attachment.NotFound(getAttachmentQuery.AttachmentFileName));
         }
 
-        string sharedFolderPath = @"Z:\";
+        const string sharedFolderPath = @"Z:\";
         var anexoFilePath = Path.Combine(sharedFolderPath, attachment.FileName);
 
         if (!File.Exists(anexoFilePath))
         {
-            return Result.Failure<AttachmentResponse>(DomainErrors.Attachment.NotFound(attachment.Id));
+            return Result.Failure<AttachmentResponse>(DomainErrors.Attachment.NotFound(attachment.FileName));
         }
         var contentType = Path.GetExtension(attachment.FileName).ToLowerInvariant() switch
         {

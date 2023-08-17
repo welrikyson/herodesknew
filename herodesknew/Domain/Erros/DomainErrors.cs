@@ -52,7 +52,10 @@ namespace herodesknew.Domain.Erros
 
         public static class Attachment
         {
-            public static readonly Func<int, Error> NotFound = fileName => new Error(
+            //public static readonly Func<int, Error> NotFound = fileName => new Error(
+            //    "Attachment.NotFound",
+            //    $"The Attachment with the identifier {fileName} was not found.");
+            public static readonly Func<string, Error> NotFound = fileName => new Error(
                 "Attachment.NotFound",
                 $"The Attachment with the identifier {fileName} was not found.");
         }
