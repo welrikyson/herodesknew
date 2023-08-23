@@ -29,12 +29,12 @@ namespace herodesknew.Application.PullRequests.Commands.CreatePullRequest
             var id = Ulid.NewUlid();
 
             string sourceBranch = $"refs/heads/{ticketId}-{id}";
-            const string targetBranch = "refs/heads/master";
-            string commitComment = $"HD {ticketId} - {id}";
-            string commitItemPath = $"/HD {ticketId} - {id}.sql";
+            const string targetBranch = "refs/heads/main";
+            string commitComment = $"HD {ticketId}";
+            string commitItemPath = $"_Scripts/HD{ticketId}/Script - {id}.sql";
             string commitContent = content;
-            string pullRequestTitle = $"HD {ticketId} - {id}";
-            string pullRequestDescription = $"HD {ticketId} - {id}";
+            string pullRequestTitle = $"HD {ticketId}";
+            string pullRequestDescription = $"HD {ticketId}";
 
             using var gitClient = GetGitClient();
             var repo = await gitClient.GetRepositoryAsync(_azureRepos.ProjName, _azureRepos.RepoName);
