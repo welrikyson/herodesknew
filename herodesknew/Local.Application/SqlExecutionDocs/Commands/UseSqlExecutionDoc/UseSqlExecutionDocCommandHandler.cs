@@ -28,6 +28,5 @@ namespace herodesknew.Local.Application.SqlExecutionDocs.Commands.UseSqlExecutio
             KeyboardSimulator.SimulateCtrlAlt9Shortcut();
             return Result.Success(sqlFile);
         }
-    }
-   
+    }   
 }
